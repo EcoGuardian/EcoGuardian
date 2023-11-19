@@ -1,3 +1,4 @@
+import 'package:ecoguardian/Screens/Auth/RegisterScreen.dart';
 import 'package:ecoguardian/Screens/Auth/WelcomeScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: 'Flutter App',
-      home: WelcomeScreen(),
+      home: RegisterScreen(),
     );
   }
 }

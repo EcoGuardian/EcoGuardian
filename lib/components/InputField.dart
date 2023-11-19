@@ -73,7 +73,7 @@ class InputField extends StatelessWidget {
               ),
               child: Text(
                 label!,
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.primary),
               ),
             ),
           TextFormField(
