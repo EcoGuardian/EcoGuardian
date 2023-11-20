@@ -10,6 +10,7 @@ class Button extends StatelessWidget {
   final double borderRadius;
   final Function funkcija;
   final bool isFullWidth;
+  final GlobalKey? key;
 
   Button({
     required this.buttonText,
@@ -22,11 +23,13 @@ class Button extends StatelessWidget {
     this.sirina,
     this.textColor = Colors.white,
     required this.isFullWidth,
+    this.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      key: key,
       onTap: () => funkcija(),
       child: Container(
         width: sirina,
