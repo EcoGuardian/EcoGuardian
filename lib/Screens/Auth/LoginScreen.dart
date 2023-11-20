@@ -2,15 +2,15 @@ import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/InputField.dart';
 import 'package:flutter/material.dart';
 
-class RegisterScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   static const String routeName = '/register';
-  const RegisterScreen({super.key});
+  const LoginScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends State<LoginScreen> {
   final _form = GlobalKey<FormState>();
 
   @override
@@ -43,43 +43,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.06),
                   Text(
-                    'Registrujte se',
+                    'Prijavite se',
                     style: Theme.of(context).textTheme.headline1?.copyWith(
                           color: Theme.of(context).colorScheme.primary,
                         ),
                   ),
                   SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.06),
-                  InputField(
-                    isMargin: true,
-                    inputAction: TextInputAction.next,
-                    inputType: TextInputType.text,
-                    hintText: 'Ime',
-                    medijakveri: medijakveri,
-                    obscureText: false,
-                    onSaved: (value) {},
-                    validator: (value) {},
-                    isLabel: true,
-                    borderRadijus: 10,
-                    label: 'Ime',
-                    hintTextSize: 16,
-                  ),
-                  InputField(
-                    isMargin: true,
-                    inputAction: TextInputAction.next,
-                    inputType: TextInputType.text,
-                    hintText: 'Prezime',
-                    medijakveri: medijakveri,
-                    obscureText: false,
-                    onSaved: (value) {},
-                    validator: (value) {},
-                    isLabel: true,
-                    borderRadijus: 10,
-                    label: 'Prezime',
-                    hintTextSize: 16,
-                  ),
                   InputField(
                     isMargin: true,
                     inputAction: TextInputAction.next,
@@ -112,23 +85,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onFieldSubmitted: (_) {
                       FocusScope.of(context).requestFocus(pass2Node);
                     },
-                  ),
-                  InputField(
-                    medijakveri: medijakveri,
-                    hintText: 'Potvrdite šifru',
-                    inputAction: TextInputAction.done,
-                    inputType: TextInputType.text,
-                    obscureText: true,
-                    validator: (value) {},
-                    onSaved: (value) {},
-                    isMargin: true,
-                    hintTextSize: 16,
-                    label: 'Šifra',
-                    borderRadijus: 10,
-                    isLabel: true,
-                    focusNode: pass2Node,
-                    onChanged: (value) {},
-                    onFieldSubmitted: (_) {},
                   ),
                   SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
                   Button(

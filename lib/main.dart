@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: 'Flutter App',
-      home: RegisterScreen(),
+      home: WelcomeScreen(),
     );
   }
 }
