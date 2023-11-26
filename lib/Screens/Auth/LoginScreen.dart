@@ -1,3 +1,5 @@
+import 'package:circular_reveal_animation/circular_reveal_animation.dart';
+import 'package:ecoguardian/Screens/Auth/ForgottenPasswordScreen.dart';
 import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/InputField.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
   final _form = GlobalKey<FormState>();
 
   @override
@@ -30,6 +32,24 @@ class _RegisterScreenState extends State<LoginScreen> {
     setState(() {
       isPassHidden2 = !isPassHidden2;
     });
+  }
+
+
+  final GlobalKey resetPassKey = GlobalKey();
+  AnimationController? animationController;
+  Animation<double>? animation;
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 600),
+    );
+    animation = CurvedAnimation(
+      parent: animationController!,
+      curve: Curves.easeIn,
+    );
   }
 
   @override
@@ -75,7 +95,7 @@ class _RegisterScreenState extends State<LoginScreen> {
                     obscureText: true,
                     validator: (value) {},
                     onSaved: (value) {},
-                    isMargin: true,
+                    isMargin: false,
                     hintTextSize: 16,
                     label: 'Šifra',
                     borderRadijus: 10,
@@ -86,15 +106,44 @@ class _RegisterScreenState extends State<LoginScreen> {
                       FocusScope.of(context).requestFocus(pass2Node);
                     },
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      TextButton(
+                        key: resetPassKey,
+                        onPressed: () {
+                          final RenderBox renderBox = resetPassKey.currentContext?.findRenderObject() as RenderBox;
+                          final Size size = renderBox.size;
+                          final Offset offset = renderBox.localToGlobal(Offset.zero);
+
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              transitionDuration: const Duration(milliseconds: 600),
+                              pageBuilder: (context, animation, duration) => CircularRevealAnimation(
+                                animation: animation,
+                                centerOffset: Offset(offset.dx + size.width * 0.5, offset.dy + size.height),
+                                child: ForgottenPasswordScreen(),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Zaboravili ste šifru?',
+                          style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.tertiary),
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
                   Button(
                     borderRadius: 10,
                     visina: 18,
                     fontsize: 18,
-                    buttonText: 'Registrujte se',
-                    textColor: Colors.white,
-                    isBorder: false,
-                    backgroundColor: Theme.of(context).primaryColor,
+                    buttonText: 'Prijavite se',
+                    textColor: Theme.of(context).colorScheme.primary,
+                    isBorder: true,
+                    backgroundColor: Colors.white,
                     isFullWidth: false,
                     funkcija: () {},
                   ),
@@ -104,7 +153,7 @@ class _RegisterScreenState extends State<LoginScreen> {
                       Navigator.of(context).pushReplacementNamed('/');
                     },
                     child: Text(
-                      'Već reciklirate kao odgovoran građanin?',
+                      'Napravite novi nalog!',
                       style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.tertiary),
                     ),
                   ),
