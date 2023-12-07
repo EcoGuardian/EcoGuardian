@@ -70,7 +70,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void submitForm() async {
-    await Provider.of<Auth>(context).register(
+    _form.currentState!.save();
+    await Provider.of<Auth>(context, listen: false).register(
       email: authData['email']!,
       ime: authData['ime']!,
       prezime: authData['prezime']!,
@@ -306,7 +307,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               pass1Node.unfocus();
                               pass2Node.unfocus();
 
-                              // _register();
+                              submitForm();
                             },
                             decoration: InputDecoration(
                               hintText: 'Potvrdite šifru',
@@ -346,7 +347,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       isBorder: false,
                       backgroundColor: Theme.of(context).primaryColor,
                       isFullWidth: false,
-                      funkcija: () {},
+                      funkcija: () {
+                        submitForm();
+                      },
                     ),
                     SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
                     TextButton(
