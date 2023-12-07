@@ -1,4 +1,3 @@
-import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:ecoguardian/Screens/Auth/RegisterScreen.dart';
 import 'package:ecoguardian/components/Button.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +14,6 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
-  final GlobalKey registerKey = GlobalKey();
-  final GlobalKey loginKey = GlobalKey();
   AnimationController? animationController;
   Animation<double>? animation;
 
@@ -71,34 +68,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Button(
-                        key: registerKey,
                         buttonText: 'Registrujte se',
                         borderRadius: 10,
                         visina: 18,
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         isBorder: false,
                         funkcija: () {
-                          final RenderBox renderBox = registerKey.currentContext?.findRenderObject() as RenderBox;
-                          final Size size = renderBox.size;
-                          final Offset offset = renderBox.localToGlobal(Offset.zero);
-
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              transitionDuration: const Duration(milliseconds: 600),
-                              pageBuilder: (context, animation, duration) => CircularRevealAnimation(
-                                animation: animation,
-                                centerOffset: Offset(offset.dx + size.width * 0.5, offset.dy + size.height),
-                                child: const RegisterScreen(),
-                              ),
-                            ),
-                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
                         },
                         isFullWidth: false,
                         sirina: medijakveri.size.width * 0.4,
                       ),
                       Button(
-                        key: loginKey,
                         buttonText: 'Prijavite se',
                         borderRadius: 10,
                         visina: 18,
@@ -106,21 +87,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                         isBorder: true,
                         textColor: Theme.of(context).colorScheme.primary,
                         funkcija: () {
-                          final RenderBox renderBox = loginKey.currentContext?.findRenderObject() as RenderBox;
-                          final Size size = renderBox.size;
-                          final Offset offset = renderBox.localToGlobal(Offset.zero);
-
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              transitionDuration: const Duration(milliseconds: 600),
-                              pageBuilder: (context, animation, duration) => CircularRevealAnimation(
-                                animation: animation,
-                                centerOffset: Offset(offset.dx + size.width * 0.5, offset.dy + size.height),
-                                child: const LoginScreen(),
-                              ),
-                            ),
-                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                         },
                         isFullWidth: false,
                         sirina: medijakveri.size.width * 0.4,

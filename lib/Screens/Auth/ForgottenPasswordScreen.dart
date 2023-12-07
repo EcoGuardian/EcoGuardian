@@ -1,4 +1,3 @@
-import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoguardian/components/button.dart';
 import 'package:ecoguardian/components/inputField.dart';
@@ -12,27 +11,7 @@ class ForgottenPasswordScreen extends StatefulWidget {
 }
 
 class _ForgottenPasswordScreenState extends State<ForgottenPasswordScreen> with SingleTickerProviderStateMixin {
-
-  //final GlobalKey registerKey = GlobalKey();
-  final GlobalKey loginKey = GlobalKey();
-  AnimationController? animationController;
-  Animation<double>? animation;
-
   @override
-  void initState() {
-    super.initState();
-    animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 600),
-    );
-    animation = CurvedAnimation(
-      parent: animationController!,
-      curve: Curves.easeIn,
-    );
-  }
-
-  @override
-
   _showModal(context) {
     showDialog(
       context: context,
@@ -97,8 +76,8 @@ class _ForgottenPasswordScreenState extends State<ForgottenPasswordScreen> with 
                   Text(
                     'Reset šifre',
                     style: Theme.of(context).textTheme.headline1?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                   ),
                   SizedBox(height: (MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top) * 0.15),
                   InputField(
@@ -131,28 +110,11 @@ class _ForgottenPasswordScreenState extends State<ForgottenPasswordScreen> with 
                   ),
                 ],
               ),
-
               Container(
                 margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.01),
                 child: TextButton(
-                  key: loginKey,
                   onPressed: () {
-                    final RenderBox renderBox = loginKey.currentContext?.findRenderObject() as RenderBox;
-                    final Size size = renderBox.size;
-                    final Offset offset = renderBox.localToGlobal(Offset.zero);
-
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        transitionDuration: const Duration(milliseconds: 600),
-                        pageBuilder: (context, animation, duration) => CircularRevealAnimation(
-                          animation: animation,
-                          centerOffset: Offset(offset.dx + size.width * 0.5, offset.dy + size.height),
-                          child: LoginScreen(),
-                        ),
-                      ),
-                    );
-                    //Navigator.of(context).pushReplacementNamed('/login');
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
                   },
                   child: Text(
                     'Nazad na prijavu',
