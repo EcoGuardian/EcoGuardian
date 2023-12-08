@@ -48,6 +48,7 @@ class Auth with ChangeNotifier {
       );
     } catch (e) {
       print(e);
+      throw (e);
     }
   }
 

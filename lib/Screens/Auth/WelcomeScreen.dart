@@ -14,22 +14,6 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
-  AnimationController? animationController;
-  Animation<double>? animation;
-
-  @override
-  void initState() {
-    super.initState();
-    animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 600),
-    );
-    animation = CurvedAnimation(
-      parent: animationController!,
-      curve: Curves.easeIn,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);

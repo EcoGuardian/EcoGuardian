@@ -93,6 +93,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
       });
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print("GRESKA $e");
       throw e;
       print(e);
     }
