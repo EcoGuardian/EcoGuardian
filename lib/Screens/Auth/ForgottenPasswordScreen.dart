@@ -22,7 +22,7 @@ class _ForgottenPasswordScreenState extends State<ForgottenPasswordScreen> with 
             padding: const EdgeInsets.only(top: 18.0, bottom: 24),
             child: Text(
               'Zahtjev za resetovanje šifre je poslat na unešenu email adresu.',
-              style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+              style: Theme.of(context).textTheme.headline4,
               textAlign: TextAlign.center,
             ),
           ),
@@ -93,6 +93,7 @@ class _ForgottenPasswordScreenState extends State<ForgottenPasswordScreen> with 
                     borderRadijus: 10,
                     label: 'Email',
                     hintTextSize: 16,
+                    visina: 18,
                   ),
                   SizedBox(height: (MediaQuery.of(context).size.width - MediaQuery.of(context).padding.top) * 0.07),
                   Button(
