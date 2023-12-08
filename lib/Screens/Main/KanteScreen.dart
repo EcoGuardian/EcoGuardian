@@ -1,3 +1,4 @@
+import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,11 +14,15 @@ class KanteScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            GestureDetector(
-              onTap: () {
-                Provider.of<Auth>(context, listen: false).logOut();
-              },
-              child: Text('KANTE GOAT ISK ISK'),
+            CustomAppBar(
+              pageTitle: Text(
+                'Pregled Kanti',
+                style: Theme.of(context).textTheme.headline2!.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+              isCenter: false,
             ),
           ],
         ),

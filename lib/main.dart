@@ -1,3 +1,4 @@
+import 'package:ecoguardian/BottomNavigationScreen.dart';
 import 'package:ecoguardian/Screens/Auth/ForgottenPasswordScreen.dart';
 import 'package:ecoguardian/Screens/Auth/RegisterScreen.dart';
 import 'package:ecoguardian/Screens/Auth/WelcomeScreen.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
                 fontFamily: 'Rubik',
                 fontSize: 36,
                 color: Color(0xFF000000),
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 letterSpacing: 1.5,
               ),
               headline2: TextStyle(
@@ -64,7 +65,7 @@ class MyApp extends StatelessWidget {
           ),
           title: 'Flutter App',
           home: auth.isAuth
-              ? KanteScreen()
+              ? const BottomNavigationScreen()
               : FutureBuilder(
                   future: auth.autoLogIn(),
                   builder: (context, authResult) => WelcomeScreen(),
