@@ -2,8 +2,10 @@ import 'package:ecoguardian/Screens/Auth/ForgottenPasswordScreen.dart';
 import 'package:ecoguardian/Screens/Auth/RegisterScreen.dart';
 import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/InputField.dart';
+import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = '/register';
@@ -16,7 +18,6 @@ class LoginScreen extends StatefulWidget {
 class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
   final _form = GlobalKey<FormState>();
 
-  @override
   final pass1Node = FocusNode();
   final emailNode = FocusNode();
 
@@ -25,6 +26,38 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
     setState(() {
       isPassHidden = !isPassHidden;
     });
+  }
+
+  bool isLoading = false;
+
+  Map<String, String> authData = {
+    'email': '',
+    'sifra': '',
+  };
+
+  void submitForm() async {
+    if (!_form.currentState!.validate()) {
+      return;
+    }
+    _form.currentState!.save();
+    print(authData['email']);
+    print(authData['sifra']);
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      await Provider.of<Auth>(context, listen: false).login(email: authData['email']!, password: authData['sifra']!).then((value) {
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print('GRESKA LOIGN SCREEN $e');
+    }
   }
 
   @override
@@ -65,7 +98,9 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                             hintText: 'Email',
                             medijakveri: medijakveri,
                             obscureText: false,
-                            onSaved: (value) {},
+                            onSaved: (value) {
+                              authData['email'] = value!.trim();
+                            },
                             validator: (value) {
                               if (pass1Node.hasFocus) {
                                 return null;
@@ -77,6 +112,7 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                             borderRadijus: 10,
                             label: 'Email',
                             hintTextSize: 16,
+                            visina: 18,
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
@@ -96,9 +132,8 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                                 TextFormField(
                                   focusNode: pass1Node,
                                   keyboardType: TextInputType.text,
-                                  textInputAction: TextInputAction.next,
+                                  textInputAction: TextInputAction.done,
                                   obscureText: isPassHidden,
-                                  onFieldSubmitted: (_) {},
                                   onChanged: (_) => _form.currentState!.validate(),
                                   validator: (value) {
                                     if (emailNode.hasFocus) {
@@ -106,6 +141,12 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                                     } else if (value!.isEmpty) {
                                       return 'Molimo Vas da unesete šifru';
                                     }
+                                  },
+                                  onSaved: (value) {
+                                    authData['sifra'] = value!.trim();
+                                  },
+                                  onFieldSubmitted: (_) {
+                                    submitForm();
                                   },
                                   decoration: InputDecoration(
                                     hintText: 'Šifra',
@@ -153,17 +194,21 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                       ),
                     ),
                     SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
-                    Button(
-                      borderRadius: 10,
-                      visina: 18,
-                      fontsize: 18,
-                      buttonText: 'Prijavite se',
-                      textColor: Theme.of(context).colorScheme.primary,
-                      isBorder: true,
-                      backgroundColor: Colors.white,
-                      isFullWidth: false,
-                      funkcija: () {},
-                    ),
+                    isLoading
+                        ? const CircularProgressIndicator()
+                        : Button(
+                            borderRadius: 10,
+                            visina: 18,
+                            fontsize: 18,
+                            buttonText: 'Prijavite se',
+                            textColor: Theme.of(context).colorScheme.primary,
+                            isBorder: true,
+                            backgroundColor: Colors.white,
+                            isFullWidth: false,
+                            funkcija: () {
+                              submitForm();
+                            },
+                          ),
                     SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
                     TextButton(
                       onPressed: () {

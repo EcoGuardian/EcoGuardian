@@ -70,14 +70,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void submitForm() async {
+    if (!_form.currentState!.validate()) {
+      return;
+    }
     _form.currentState!.save();
-    await Provider.of<Auth>(context, listen: false).register(
-      email: authData['email']!,
-      ime: authData['ime']!,
-      prezime: authData['prezime']!,
-      sifra: authData['sifra']!,
-      sifraPot: authData['sifraPot']!,
-    );
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      await Provider.of<Auth>(context, listen: false)
+          .register(
+        email: authData['email']!,
+        ime: authData['ime']!,
+        prezime: authData['prezime']!,
+        sifra: authData['sifra']!,
+        sifraPot: authData['sifraPot']!,
+      )
+          .then((value) {
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+      });
+    } catch (e) {
+      throw e;
+      print(e);
+    }
   }
 
   @override
@@ -220,7 +238,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               FocusScope.of(context).requestFocus(pass2Node);
                             },
                             onSaved: (value) {
-                              authData['sifra'] = value!;
+                              authData['sifra'] = value!.trim();
                             },
                             onChanged: (_) => _form.currentState!.validate(),
                             validator: (value) {
@@ -228,8 +246,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 return null;
                               } else if (value!.isEmpty || !value.contains(RegExp(r'[A-Za-z]'))) {
                                 return 'Molimo Vas unesite šifru';
-                              } else if (value.length < 5) {
-                                return 'Šifra mora imati više od 4 karaktera';
+                              } else if (value.length < 8) {
+                                return 'Šifra mora imati više od 8 karaktera';
                               } else if (value.length > 50) {
                                 return 'Šifra mora imati manje od 50 karaktera';
                               } else if (!RegExp(r'^[a-zA-Z\S]+$').hasMatch(value)) {
@@ -295,7 +313,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               }
                             },
                             onSaved: (value) {
-                              authData['sifraPot'] = value!;
+                              authData['sifraPot'] = value!.trim();
                             },
                             onFieldSubmitted: (_) {
                               FocusManager.instance.primaryFocus?.unfocus();
@@ -306,7 +324,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               emailNode.unfocus();
                               pass1Node.unfocus();
                               pass2Node.unfocus();
-
                               submitForm();
                             },
                             decoration: InputDecoration(
@@ -338,19 +355,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
-                    Button(
-                      borderRadius: 10,
-                      visina: 18,
-                      fontsize: 18,
-                      buttonText: 'Registrujte se',
-                      textColor: Colors.white,
-                      isBorder: false,
-                      backgroundColor: Theme.of(context).primaryColor,
-                      isFullWidth: false,
-                      funkcija: () {
-                        submitForm();
-                      },
-                    ),
+                    isLoading
+                        ? const CircularProgressIndicator()
+                        : Button(
+                            borderRadius: 10,
+                            visina: 18,
+                            fontsize: 18,
+                            buttonText: 'Registrujte se',
+                            textColor: Colors.white,
+                            isBorder: false,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            isFullWidth: false,
+                            funkcija: () {
+                              submitForm();
+                            },
+                          ),
                     SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
                     TextButton(
                       onPressed: () {
