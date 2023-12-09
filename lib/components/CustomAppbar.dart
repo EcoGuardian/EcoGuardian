@@ -5,8 +5,7 @@ class CustomAppBar extends StatelessWidget {
   final IconData? prvaIkonica;
   final double? prvaIkonicaSize;
   final Function? prvaIkonicaFunkcija;
-  final IconData? drugaIkonica;
-  final double? drugaIkonicaSize;
+  final Widget? drugaIkonica;
   final Function? drugaIkonicaFunkcija;
   final bool isCenter;
 
@@ -16,7 +15,6 @@ class CustomAppBar extends StatelessWidget {
     this.prvaIkonicaSize,
     this.prvaIkonicaFunkcija,
     this.drugaIkonica,
-    this.drugaIkonicaSize,
     this.drugaIkonicaFunkcija,
     required this.isCenter,
   });
@@ -52,11 +50,7 @@ class CustomAppBar extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () => drugaIkonicaFunkcija!(),
-                    child: Icon(
-                      drugaIkonica,
-                      size: drugaIkonicaSize ?? 34,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    child: drugaIkonica,
                   ),
                 ],
               ),
@@ -94,11 +88,7 @@ class CustomAppBar extends StatelessWidget {
                   if (drugaIkonica != null)
                     GestureDetector(
                       onTap: () => drugaIkonicaFunkcija!(),
-                      child: Icon(
-                        drugaIkonica,
-                        size: 34,
-                        color: Theme.of(context).primaryColor,
-                      ),
+                      child: drugaIkonica,
                     ),
                 ],
               ),

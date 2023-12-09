@@ -1,3 +1,4 @@
+import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:flutter/material.dart';
 
 class AktivnostiScreen extends StatelessWidget {
@@ -11,7 +12,16 @@ class AktivnostiScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            Text('AKTIVNOSTI GOAT'),
+            CustomAppBar(
+              pageTitle: Text(
+                'Aktivnosti',
+                style: Theme.of(context).textTheme.headline2!.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+              isCenter: false,
+            ),
           ],
         ),
       ),
