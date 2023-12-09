@@ -2,6 +2,7 @@ import 'package:ecoguardian/Screens/Auth/ForgottenPasswordScreen.dart';
 import 'package:ecoguardian/Screens/Auth/RegisterScreen.dart';
 import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/InputField.dart';
+import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
@@ -40,8 +41,6 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
       return;
     }
     _form.currentState!.save();
-    print(authData['email']);
-    print(authData['sifra']);
     try {
       setState(() {
         isLoading = true;
@@ -56,7 +55,18 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
       setState(() {
         isLoading = false;
       });
-      print('GRESKA LOIGN SCREEN $e');
+
+      Metode.showErrorDialog(
+        isJednoPoredDrugog: false,
+        context: context,
+        naslov: e.toString().contains('Invalid email or password') ? 'Pogrešna šifra ili email' : 'Došlo je do greške',
+        button1Text: 'Zatvori',
+        button1Fun: () {
+          Navigator.pop(context);
+        },
+        isButton2: false,
+      );
+      throw e;
     }
   }
 

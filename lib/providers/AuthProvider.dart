@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -9,8 +11,11 @@ class Auth with ChangeNotifier {
   String? _email;
   String? _ime;
 
+  String get token {
+    return _token!;
+  }
+
   bool get isAuth {
-    // print(_token);
     if (_token != null) {
       return true;
     }
@@ -35,6 +40,9 @@ class Auth with ChangeNotifier {
       }).then(
         (value) async {
           final responseData = json.decode(value.body);
+          if (responseData['success'] == false) {
+            throw HttpException(responseData['data']['email'][0]);
+          }
           _token = responseData['data']['token'];
           final prefs = await SharedPreferences.getInstance();
           final userData = json.encode(
@@ -64,6 +72,9 @@ class Auth with ChangeNotifier {
         'password': password,
       }).then((value) async {
         final responseData = json.decode(value.body);
+        if (responseData['success'] == false) {
+          throw HttpException(responseData['data']);
+        }
 
         _token = responseData['data']['token'];
         final prefs = await SharedPreferences.getInstance();
@@ -76,7 +87,6 @@ class Auth with ChangeNotifier {
         notifyListeners();
       });
     } catch (e) {
-      print('GRESKA PROVIDER $e');
       throw e;
     }
   }
@@ -98,5 +108,17 @@ class Auth with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     prefs.clear();
     notifyListeners();
+  }
+
+  Future<void> getCurrentUser(token) async {
+    Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/users/me');
+    await http.get(
+      url,
+      headers: {
+        'Token': token,
+      },
+    ).then((value) {
+      print(value.statusCode);
+    });
   }
 }

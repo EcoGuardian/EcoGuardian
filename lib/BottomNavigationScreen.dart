@@ -81,7 +81,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
               label: 'Prijavi',
             ),
             BottomNavigationBarItem(
-              icon: Icon(TablerIcons.calendar),
+              icon: Icon(TablerIcons.calendar_month),
               label: 'Aktivnosti',
             ),
             BottomNavigationBarItem(

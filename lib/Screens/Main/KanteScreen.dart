@@ -1,30 +1,132 @@
 import 'package:ecoguardian/components/CustomAppbar.dart';
+import 'package:ecoguardian/components/InputField.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:provider/provider.dart';
 
-class KanteScreen extends StatelessWidget {
+class KanteScreen extends StatefulWidget {
   static const String routeName = '/KanteScreen';
   const KanteScreen({super.key});
 
   @override
+  State<KanteScreen> createState() => _KanteScreenState();
+}
+
+class _KanteScreenState extends State<KanteScreen> {
+  final searchController = TextEditingController();
+  String? searchString;
+  @override
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            CustomAppBar(
-              pageTitle: Text(
-                'Pregled Kanti',
-                style: Theme.of(context).textTheme.headline2!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              CustomAppBar(
+                pageTitle: Text(
+                  'Pregled Kanti',
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                ),
+                isCenter: false,
               ),
-              isCenter: false,
-            ),
-          ],
+              SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
+              TextFormField(
+                controller: searchController,
+                onChanged: (value) {
+                  searchString = value.trim();
+                },
+                onFieldSubmitted: (_) {
+                  // if (searchString == '') {
+                  //   return;
+                  // }
+                  // FocusManager.instance.primaryFocus!.unfocus();
+                  // Navigator.push(
+                  //   context,
+                  //   PageRouteBuilder(
+                  //     transitionDuration: const Duration(milliseconds: 120),
+                  //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  //       return SlideTransition(
+                  //         position: Tween<Offset>(
+                  //           begin: const Offset(1, 0),
+                  //           end: Offset.zero,
+                  //         ).animate(animation),
+                  //         child: child,
+                  //       );
+                  //     },
+                  //     pageBuilder: (context, animation, duration) => SearchScreen(
+                  //       searchString: searchString,
+                  //       filterData: filterData,
+                  //       tagovi: tagovi,
+                  //       tezina: filterTezina,
+                  //       isFav: false,
+                  //     ),
+                  //   ),
+                  // );
+                },
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  hintText: 'Potražite lokaciju...',
+                  hintStyle: Theme.of(context).textTheme.headline3?.copyWith(
+                        color: Colors.grey,
+                      ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  suffixIconColor: Colors.grey,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      // if (searchString == '') {
+                      //   return;
+                      // }
+                      // FocusManager.instance.primaryFocus!.unfocus();
+                      // Navigator.push(
+                      //   context,
+                      //   PageRouteBuilder(
+                      //     transitionDuration: const Duration(milliseconds: 120),
+                      //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      //       return SlideTransition(
+                      //         position: Tween<Offset>(
+                      //           begin: const Offset(1, 0),
+                      //           end: Offset.zero,
+                      //         ).animate(animation),
+                      //         child: child,
+                      //       );
+                      //     },
+                      //     pageBuilder: (context, animation, duration) => SearchScreen(
+                      //       searchString: searchString,
+                      //       filterData: filterData,
+                      //       tagovi: tagovi,
+                      //       tezina: filterTezina,
+                      //       isFav: false,
+                      //     ),
+                      //   ),
+                      // );
+                    },
+                    child: const Icon(TablerIcons.search),
+                  ),
+                ),
+              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Provider.of<Auth>(context, listen: false).getCurrentUser(Provider.of<Auth>(context, listen: false).token);
+              //   },
+              //   child: Text('PRITISNI ME'),
+              // ),
+            ],
+          ),
         ),
       ),
     );

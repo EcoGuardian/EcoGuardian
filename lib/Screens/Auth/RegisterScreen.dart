@@ -1,6 +1,7 @@
 import 'package:ecoguardian/Screens/Auth/LoginScreen.dart';
 import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/InputField.dart';
+import 'package:ecoguardian/components/metode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:provider/provider.dart';
@@ -96,9 +97,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         isLoading = false;
       });
-      print("GRESKA $e");
+
+      Metode.showErrorDialog(
+        isJednoPoredDrugog: false,
+        context: context,
+        naslov: e.toString().contains('The email has already been taken') ? 'Taj email je već u upotrebi' : 'Došlo je do greške',
+        button1Text: 'Zatvori',
+        button1Fun: () {
+          Navigator.pop(context);
+        },
+        isButton2: false,
+      );
       throw e;
-      print(e);
     }
   }
 
