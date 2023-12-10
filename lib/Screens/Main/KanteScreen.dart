@@ -21,11 +21,11 @@ class _KanteScreenState extends State<KanteScreen> {
   User? user;
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken);
-    user = Provider.of<Auth>(context).getCurrentUser;
+    user = Provider.of<Auth>(context, listen: false).getCurrentUser;
   }
 
   @override
@@ -45,6 +45,7 @@ class _KanteScreenState extends State<KanteScreen> {
                   ),
             ),
             isCenter: false,
+            horizontalMargin: 0.06,
             drugaIkonica: user!.role == 'Employee' || user!.role == 'SuperAdmin'
                 ? Container(
                     padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
@@ -67,7 +68,8 @@ class _KanteScreenState extends State<KanteScreen> {
                 : null,
           ),
         ),
-        body: SafeArea(
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
           child: Column(
             children: [
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
@@ -76,34 +78,7 @@ class _KanteScreenState extends State<KanteScreen> {
                 onChanged: (value) {
                   searchString = value.trim();
                 },
-                onFieldSubmitted: (_) {
-                  // if (searchString == '') {
-                  //   return;
-                  // }
-                  // FocusManager.instance.primaryFocus!.unfocus();
-                  // Navigator.push(
-                  //   context,
-                  //   PageRouteBuilder(
-                  //     transitionDuration: const Duration(milliseconds: 120),
-                  //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  //       return SlideTransition(
-                  //         position: Tween<Offset>(
-                  //           begin: const Offset(1, 0),
-                  //           end: Offset.zero,
-                  //         ).animate(animation),
-                  //         child: child,
-                  //       );
-                  //     },
-                  //     pageBuilder: (context, animation, duration) => SearchScreen(
-                  //       searchString: searchString,
-                  //       filterData: filterData,
-                  //       tagovi: tagovi,
-                  //       tezina: filterTezina,
-                  //       isFav: false,
-                  //     ),
-                  //   ),
-                  // );
-                },
+                onFieldSubmitted: (_) {},
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   hintText: 'Potražite lokaciju...',
@@ -122,34 +97,7 @@ class _KanteScreenState extends State<KanteScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   suffixIcon: GestureDetector(
-                    onTap: () {
-                      // if (searchString == '') {
-                      //   return;
-                      // }
-                      // FocusManager.instance.primaryFocus!.unfocus();
-                      // Navigator.push(
-                      //   context,
-                      //   PageRouteBuilder(
-                      //     transitionDuration: const Duration(milliseconds: 120),
-                      //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                      //       return SlideTransition(
-                      //         position: Tween<Offset>(
-                      //           begin: const Offset(1, 0),
-                      //           end: Offset.zero,
-                      //         ).animate(animation),
-                      //         child: child,
-                      //       );
-                      //     },
-                      //     pageBuilder: (context, animation, duration) => SearchScreen(
-                      //       searchString: searchString,
-                      //       filterData: filterData,
-                      //       tagovi: tagovi,
-                      //       tezina: filterTezina,
-                      //       isFav: false,
-                      //     ),
-                      //   ),
-                      // );
-                    },
+                    onTap: () {},
                     child: const Icon(TablerIcons.search),
                   ),
                 ),
@@ -159,5 +107,12 @@ class _KanteScreenState extends State<KanteScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    Provider.of<Auth>(context, listen: false).dispose();
   }
 }

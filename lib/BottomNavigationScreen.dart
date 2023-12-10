@@ -2,6 +2,7 @@ import 'package:ecoguardian/Screens/Main/AktivnostiScreen.dart';
 import 'package:ecoguardian/Screens/Main/KanteScreen.dart';
 import 'package:ecoguardian/Screens/Main/NalogScreen.dart';
 import 'package:ecoguardian/Screens/Main/PrijaviScreen.dart';
+import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
@@ -24,6 +25,12 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   ];
 
   int _selectedIndex = 0;
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken);
+  }
 
   void _selectPage(int index) {
     if (_selectedIndex == index) {
@@ -40,10 +47,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
     final medijakveri = MediaQuery.of(context);
 
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-        child: _pages[_selectedIndex],
-      ),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -96,5 +100,12 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    Provider.of<Auth>(context, listen: false).dispose();
   }
 }

@@ -23,6 +23,7 @@ class AktivnostiScreen extends StatelessWidget {
                 ),
           ),
           isCenter: false,
+          horizontalMargin: 0.06,
           drugaIkonica: Container(
             padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
             decoration: BoxDecoration(
@@ -40,7 +41,8 @@ class AktivnostiScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        child: SafeArea(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
           child: Column(
             children: [
               SizedBox(

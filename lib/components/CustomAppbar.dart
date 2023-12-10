@@ -8,6 +8,7 @@ class CustomAppBar extends StatelessWidget {
   final Widget? drugaIkonica;
   final Function? drugaIkonicaFunkcija;
   final bool isCenter;
+  final double? horizontalMargin;
 
   CustomAppBar({
     required this.pageTitle,
@@ -17,6 +18,7 @@ class CustomAppBar extends StatelessWidget {
     this.drugaIkonica,
     this.drugaIkonicaFunkcija,
     required this.isCenter,
+    this.horizontalMargin = 0,
   });
 
   @override
@@ -25,6 +27,7 @@ class CustomAppBar extends StatelessWidget {
     return isCenter
         ? SafeArea(
             child: Container(
+              margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * horizontalMargin!),
               padding: EdgeInsets.only(
                 top: (medijakveri.size.height - medijakveri.padding.top) * 0.035,
                 bottom: (medijakveri.size.height - medijakveri.padding.top) * 0.012,
@@ -58,6 +61,7 @@ class CustomAppBar extends StatelessWidget {
           )
         : SafeArea(
             child: Container(
+              margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * horizontalMargin!),
               padding: EdgeInsets.only(
                 top: (medijakveri.size.height - medijakveri.padding.top) * 0.035,
                 bottom: (medijakveri.size.height - medijakveri.padding.top) * 0.012,
