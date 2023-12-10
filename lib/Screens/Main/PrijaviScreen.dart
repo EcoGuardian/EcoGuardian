@@ -60,6 +60,7 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                 ),
           ),
           isCenter: false,
+          horizontalMargin: 0.06,
           drugaIkonica: Container(
             padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
             decoration: BoxDecoration(
@@ -77,7 +78,8 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        child: SafeArea(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
           child: Column(
             children: [
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),

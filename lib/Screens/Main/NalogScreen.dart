@@ -13,39 +13,38 @@ class NalogScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
     return Scaffold(
-      body: SafeArea(
+      appBar: PreferredSize(
+        preferredSize: Size(100, 100),
+        child: CustomAppBar(
+          pageTitle: Text(
+            'Moj Nalog',
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+          ),
+          isCenter: false,
+          horizontalMargin: 0.06,
+          drugaIkonica: Container(
+            padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                )),
+            child: Icon(
+              TablerIcons.pencil,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          drugaIkonicaFunkcija: () {},
+        ),
+      ),
+      body: Container(
+        margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
         child: Column(
           children: [
-            CustomAppBar(
-              pageTitle: Text(
-                'Moj Nalog',
-                style: Theme.of(context).textTheme.headline2!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-              ),
-              isCenter: false,
-              drugaIkonica: Container(
-                padding: const EdgeInsets.fromLTRB(4, 2, 4, 4),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.primary,
-                    )),
-                child: Center(
-                  child: Container(
-                    child: Icon(
-                      TablerIcons.pencil,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ),
-              ),
-              drugaIkonicaFunkcija: () {
-                print("PITE");
-              },
-            ),
             NalogItemCard(
               icon: TablerIcons.calendar_month,
               text: 'Moje Aktivnosti',
