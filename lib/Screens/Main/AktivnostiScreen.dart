@@ -1,6 +1,8 @@
+import 'package:ecoguardian/components/AktivnostiCardWidget.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
+import 'package:intl/intl.dart';
 
 class AktivnostiScreen extends StatelessWidget {
   static const String routeName = '/AktivnostiScreen';
@@ -29,7 +31,7 @@ class AktivnostiScreen extends StatelessWidget {
                 border: Border.all(
                   color: Colors.transparent,
                 )),
-            child: Icon(
+            child: const Icon(
               TablerIcons.circle_check,
               color: Colors.transparent,
             ),
@@ -37,9 +39,18 @@ class AktivnostiScreen extends StatelessWidget {
           drugaIkonicaFunkcija: () {},
         ),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [],
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Column(
+            children: [
+              SizedBox(
+                height: (medijakveri.size.height - medijakveri.padding.top) * 0.025,
+              ),
+              AktivnostiCardWidget(title: 'Čišćenje obale Lima', dateTime: DateTime(2023, 10, 24), time: TimeOfDay(hour: 10, minute: 00), location: 'Polimska, Potkrajci, Bijelo Polje', participants: 1318),
+              AktivnostiCardWidget(title: 'Čišćenje obale Lima', dateTime: DateTime(2023, 10, 24), time: TimeOfDay(hour: 10, minute: 00), location: 'Polimska, Potkrajci, Bijelo Polje', participants: 1318),
+              AktivnostiCardWidget(title: 'Čišćenje obale Lima', dateTime: DateTime(2023, 10, 24), time: TimeOfDay(hour: 10, minute: 00), location: 'Polimska, Potkrajci, Bijelo Polje', participants: 1318),
+            ],
+          ),
         ),
       ),
     );
