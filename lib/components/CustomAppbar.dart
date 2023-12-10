@@ -64,24 +64,21 @@ class CustomAppBar extends StatelessWidget {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
                     children: [
                       if (prvaIkonica != null)
-                        SizedBox(
-                          height: 30,
-                          width: 25,
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () => prvaIkonicaFunkcija!(),
-                            icon: Icon(
-                              prvaIkonica,
-                              size: prvaIkonicaSize,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () => prvaIkonicaFunkcija!(),
+                          icon: Icon(
+                            prvaIkonica,
+                            size: prvaIkonicaSize,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
-                      if (prvaIkonica != null) SizedBox(width: 5),
+                      if (prvaIkonica != null) const SizedBox(width: 5),
                       pageTitle,
                     ],
                   ),

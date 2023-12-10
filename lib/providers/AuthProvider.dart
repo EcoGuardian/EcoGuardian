@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ecoguardian/models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -7,16 +8,19 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
-  String? _token;
-  String? _email;
-  String? _ime;
+  String? getToken;
+  User? currentUser;
+
+  User get getCurrentUser {
+    return currentUser!;
+  }
 
   String get token {
-    return _token!;
+    return getToken!;
   }
 
   bool get isAuth {
-    if (_token != null) {
+    if (getToken != null) {
       return true;
     }
 
@@ -43,11 +47,11 @@ class Auth with ChangeNotifier {
           if (responseData['success'] == false) {
             throw HttpException(responseData['data']['email'][0]);
           }
-          _token = responseData['data']['token'];
+          getToken = responseData['data']['token'];
           final prefs = await SharedPreferences.getInstance();
           final userData = json.encode(
             {
-              'token': _token,
+              'token': getToken,
             },
           );
           prefs.setString('userData', userData);
@@ -76,11 +80,11 @@ class Auth with ChangeNotifier {
           throw HttpException(responseData['data']);
         }
 
-        _token = responseData['data']['token'];
+        getToken = responseData['data']['token'];
         final prefs = await SharedPreferences.getInstance();
         final userData = json.encode(
           {
-            'token': _token,
+            'token': getToken,
           },
         );
         prefs.setString('userData', userData);
@@ -97,28 +101,39 @@ class Auth with ChangeNotifier {
       return false;
     }
     final extractedUserData = json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
-    _token = extractedUserData['token'];
+    getToken = extractedUserData['token'];
     notifyListeners();
     return true;
   }
 
   Future<void> logOut() async {
-    _token = null;
+    getToken = null;
 
     final prefs = await SharedPreferences.getInstance();
     prefs.clear();
     notifyListeners();
   }
 
-  Future<void> getCurrentUser(token) async {
+  Future<void> readCurrentUser(token) async {
     Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/users/me');
     await http.get(
       url,
       headers: {
-        'Token': token,
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
     ).then((value) {
-      print(value.statusCode);
+      final responseData = json.decode(value.body);
+      if (responseData['message'] != 'User fetched successfuly!') {
+        throw HttpException(responseData['message']);
+      }
+
+      currentUser = User(
+        name: responseData['data']['name'],
+        email: responseData['data']['email'],
+        role: responseData['data']['role'],
+      );
     });
   }
 }
