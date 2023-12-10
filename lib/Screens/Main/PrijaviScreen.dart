@@ -49,40 +49,37 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size(100, 100),
+        child: CustomAppBar(
+          pageTitle: Text(
+            'Prijavite Divlju Deponiju',
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+          ),
+          isCenter: false,
+          drugaIkonica: Container(
+            padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                )),
+            child: Icon(
+              TablerIcons.circle_check,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          drugaIkonicaFunkcija: () {},
+        ),
+      ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
             children: [
-              CustomAppBar(
-                pageTitle: Text(
-                  'Prijavite Divlju Deponiju',
-                  style: Theme.of(context).textTheme.headline2!.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                ),
-                isCenter: false,
-                drugaIkonica: Container(
-                  padding: const EdgeInsets.fromLTRB(4, 2, 4, 4),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.primary,
-                      )),
-                  child: Center(
-                    child: Container(
-                      child: Icon(
-                        TablerIcons.circle_check,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
-                drugaIkonicaFunkcija: () {
-                  print("PITE");
-                },
-              ),
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
               GestureDetector(
                 onTap: () {
@@ -104,7 +101,7 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                     button2Text: 'Galerija',
                     button2Fun: () {
                       _takeImage(false);
-        
+
                       Navigator.pop(context);
                     },
                     isButton2Icon: true,
@@ -153,8 +150,10 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
               Row(
                 children: [
-                  Text("Dodajte lokaciju divlje deponije",style: Theme.of(context).textTheme.headline3?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,)),
+                  Text("Dodajte lokaciju divlje deponije",
+                      style: Theme.of(context).textTheme.headline3?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          )),
                 ],
               ),
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
@@ -162,7 +161,7 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                 //key: key,
                 onTap: () {},
                 child: Container(
-                  //width: sirina,
+                    //width: sirina,
                     padding: EdgeInsets.symmetric(
                       vertical: 18,
                     ),
@@ -176,26 +175,31 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(TablerIcons.map_pin_filled, size: 25, color: Colors.white,),
-                        SizedBox(width: 10,),
+                        Icon(
+                          TablerIcons.map_pin_filled,
+                          size: 25,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Text(
                           "Trenutna lokacija",
                           style: Theme.of(context).textTheme.headline3!.copyWith(
-                            // fontWeight: FontWeight.w600,
-                            fontSize: 18 ?? 20,
-                            color: Colors.white,
-                          ),
+                                // fontWeight: FontWeight.w600,
+                                fontSize: 18 ?? 20,
+                                color: Colors.white,
+                              ),
                         ),
                       ],
-                    )
-                ),
+                    )),
               ),
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
               GestureDetector(
                 //key: key,
                 onTap: () {},
                 child: Container(
-                  //width: sirina,
+                    //width: sirina,
                     padding: EdgeInsets.symmetric(
                       vertical: 18,
                     ),
@@ -209,19 +213,24 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(TablerIcons.map_2, size: 25, color: Theme.of(context).primaryColor,),
-                        SizedBox(width: 10,),
+                        Icon(
+                          TablerIcons.map_2,
+                          size: 25,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Text(
                           "Lokacija na mapi",
                           style: Theme.of(context).textTheme.headline3!.copyWith(
-                            // fontWeight: FontWeight.w600,
-                            fontSize: 18 ?? 20,
-                            color: Theme.of(context).primaryColor,
-                          ),
+                                // fontWeight: FontWeight.w600,
+                                fontSize: 18 ?? 20,
+                                color: Theme.of(context).primaryColor,
+                              ),
                         ),
                       ],
-                    )
-                ),
+                    )),
               ),
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
               InputField(

@@ -26,6 +26,10 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   int _selectedIndex = 0;
 
   void _selectPage(int index) {
+    if (_selectedIndex == index) {
+      return;
+    }
+
     setState(() {
       _selectedIndex = index;
     });
