@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class InputField extends StatelessWidget {
   final MediaQueryData medijakveri;
-  final String? label;
+  final Widget? label;
   final bool? isLabel;
   final String? hintText;
   final String? initalValue;
@@ -71,10 +71,7 @@ class InputField extends StatelessWidget {
                 bottom: 8,
                 left: medijakveri.size.width * 0.02,
               ),
-              child: Text(
-                label!,
-                style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.primary),
-              ),
+              child: label,
             ),
           TextFormField(
             keyboardType: inputType,

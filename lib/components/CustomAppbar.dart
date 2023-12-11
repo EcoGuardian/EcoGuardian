@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget {
   final Widget pageTitle;
-  final IconData? prvaIkonica;
+  final Widget? prvaIkonica;
   final double? prvaIkonicaSize;
   final Function? prvaIkonicaFunkcija;
   final Widget? drugaIkonica;
@@ -37,11 +37,7 @@ class CustomAppBar extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () => prvaIkonicaFunkcija!(),
-                    child: Icon(
-                      prvaIkonica,
-                      size: prvaIkonicaSize ?? 34,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    child: prvaIkonica,
                   ),
                   Container(
                     constraints: BoxConstraints(
@@ -73,14 +69,9 @@ class CustomAppBar extends StatelessWidget {
                   Row(
                     children: [
                       if (prvaIkonica != null)
-                        IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () => prvaIkonicaFunkcija!(),
-                          icon: Icon(
-                            prvaIkonica,
-                            size: prvaIkonicaSize,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                        GestureDetector(
+                          onTap: () => prvaIkonicaFunkcija!(),
+                          child: prvaIkonica,
                         ),
                       if (prvaIkonica != null) const SizedBox(width: 5),
                       pageTitle,

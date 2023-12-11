@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          title: 'Flutter App',
+          title: 'EcoGuardian',
           home: auth.isAuth
               ? const BottomNavigationScreen()
               : FutureBuilder(

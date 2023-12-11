@@ -108,32 +108,37 @@ class Auth with ChangeNotifier {
 
   Future<void> logOut() async {
     getToken = null;
-
     final prefs = await SharedPreferences.getInstance();
+    currentUser = null;
     prefs.clear();
     notifyListeners();
   }
 
   Future<void> readCurrentUser(token) async {
     Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/users/me');
-    await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    ).then((value) {
-      final responseData = json.decode(value.body);
-      if (responseData['message'] != 'User fetched successfuly!') {
-        throw HttpException(responseData['message']);
-      }
+    try {
+      await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ).then((value) {
+        final responseData = json.decode(value.body);
+        if (responseData['message'] != 'User fetched successfuly!') {
+          throw HttpException(responseData['message']);
+        }
 
-      currentUser = User(
-        name: responseData['data']['name'],
-        email: responseData['data']['email'],
-        role: responseData['data']['role'],
-      );
-    });
+        currentUser = User(
+          name: responseData['data']['name'],
+          email: responseData['data']['email'],
+          role: responseData['data']['role'],
+        );
+        notifyListeners();
+      });
+    } catch (e) {
+      throw e;
+    }
   }
 }

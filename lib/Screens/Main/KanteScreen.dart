@@ -18,24 +18,24 @@ class KanteScreen extends StatefulWidget {
 class _KanteScreenState extends State<KanteScreen> {
   final searchController = TextEditingController();
   String? searchString;
-  User? user;
 
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
+
     Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken);
-    user = Provider.of<Auth>(context, listen: false).getCurrentUser;
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<Auth>(context);
     final medijakveri = MediaQuery.of(context);
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size(100, 100),
+          preferredSize: const Size(100, 100),
           child: CustomAppBar(
             pageTitle: Text(
               'Pregled Kanti',
@@ -46,22 +46,23 @@ class _KanteScreenState extends State<KanteScreen> {
             ),
             isCenter: false,
             horizontalMargin: 0.06,
-            drugaIkonica: user!.role == 'Employee' || user!.role == 'SuperAdmin'
+            drugaIkonica: auth.getCurrentUser.role == 'Employee' || auth.getCurrentUser.role == 'SuperAdmin'
                 ? Container(
                     padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primary,
-                        )),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
                     child: Icon(
                       TablerIcons.circle_plus,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   )
                 : null,
-            drugaIkonicaFunkcija: user!.role == 'Employee' || user!.role == 'SuperAdmin'
+            drugaIkonicaFunkcija: auth.getCurrentUser.role == 'Employee' || auth.getCurrentUser.role == 'SuperAdmin'
                 ? () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => DodajKantuScreen()));
                   }
@@ -107,12 +108,5 @@ class _KanteScreenState extends State<KanteScreen> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    Provider.of<Auth>(context, listen: false).dispose();
   }
 }

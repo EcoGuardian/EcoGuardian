@@ -9,7 +9,7 @@ class Button extends StatelessWidget {
   final double? sirina;
   final double borderRadius;
   final Function funkcija;
-  final bool isFullWidth;
+  final Widget? icon;
   final GlobalKey? key;
 
   Button({
@@ -22,8 +22,8 @@ class Button extends StatelessWidget {
     this.fontsize,
     this.sirina,
     this.textColor = Colors.white,
-    required this.isFullWidth,
     this.key,
+    this.icon,
   });
 
   @override
@@ -43,27 +43,21 @@ class Button extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(borderRadius),
         ),
-        child: isFullWidth
-            ? Center(
-                child: Text(
-                  buttonText,
-                  style: Theme.of(context).textTheme.headline3!.copyWith(
-                        // fontWeight: FontWeight.w600,
-                        fontSize: fontsize ?? 20,
-                        color: textColor,
-                      ),
-                ),
-              )
-            : Center(
-                child: Text(
-                  buttonText,
-                  style: Theme.of(context).textTheme.headline3!.copyWith(
-                        // fontWeight: FontWeight.w600,
-                        fontSize: fontsize ?? 20,
-                        color: textColor,
-                      ),
-                ),
-              ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null) icon!,
+            if (icon != null) const SizedBox(width: 10),
+            Text(
+              buttonText,
+              style: Theme.of(context).textTheme.headline3!.copyWith(
+                    // fontWeight: FontWeight.w600,
+                    fontSize: fontsize ?? 20,
+                    color: textColor,
+                  ),
+            ),
+          ],
+        ),
       ),
     );
   }
