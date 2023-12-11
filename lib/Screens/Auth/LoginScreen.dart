@@ -120,7 +120,7 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                             },
                             isLabel: true,
                             borderRadijus: 10,
-                            label: 'Email',
+                            label: Text('Email'),
                             hintTextSize: 16,
                             visina: 18,
                           ),
@@ -214,7 +214,6 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                             textColor: Theme.of(context).colorScheme.primary,
                             isBorder: true,
                             backgroundColor: Colors.white,
-                            isFullWidth: false,
                             funkcija: () {
                               submitForm();
                             },

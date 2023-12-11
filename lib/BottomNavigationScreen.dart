@@ -25,12 +25,6 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   ];
 
   int _selectedIndex = 0;
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken);
-  }
 
   void _selectPage(int index) {
     if (_selectedIndex == index) {
@@ -100,12 +94,5 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    Provider.of<Auth>(context, listen: false).dispose();
   }
 }

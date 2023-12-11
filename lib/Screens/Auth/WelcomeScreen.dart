@@ -60,7 +60,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                         funkcija: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
                         },
-                        isFullWidth: false,
                         sirina: medijakveri.size.width * 0.4,
                       ),
                       Button(
@@ -73,7 +72,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                         funkcija: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                         },
-                        isFullWidth: false,
                         sirina: medijakveri.size.width * 0.4,
                       ),
                     ],

@@ -1,6 +1,7 @@
+import 'package:ecoguardian/components/Button.dart';
+import 'package:ecoguardian/components/InputField.dart';
 import 'package:flutter/material.dart';
-import 'package:ecoguardian/components/button.dart';
-import 'package:ecoguardian/components/inputField.dart';
+
 import 'package:ecoguardian/screens/auth/LoginScreen.dart';
 
 class ForgottenPasswordScreen extends StatefulWidget {
@@ -91,7 +92,7 @@ class _ForgottenPasswordScreenState extends State<ForgottenPasswordScreen> with 
                     validator: (value) {},
                     isLabel: true,
                     borderRadijus: 10,
-                    label: 'Email',
+                    label: Text('Email'),
                     hintTextSize: 16,
                     visina: 18,
                   ),
@@ -104,7 +105,6 @@ class _ForgottenPasswordScreenState extends State<ForgottenPasswordScreen> with 
                     textColor: Colors.white,
                     isBorder: false,
                     backgroundColor: Theme.of(context).primaryColor,
-                    isFullWidth: false,
                     funkcija: () {
                       _showModal(context);
                     },
