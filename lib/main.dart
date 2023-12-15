@@ -3,6 +3,7 @@ import 'package:ecoguardian/Screens/Auth/ForgottenPasswordScreen.dart';
 import 'package:ecoguardian/Screens/Auth/RegisterScreen.dart';
 import 'package:ecoguardian/Screens/Auth/WelcomeScreen.dart';
 import 'package:ecoguardian/Screens/Main/KanteScreen.dart';
+import 'package:ecoguardian/Screens/Main/MojePrijaveScreen.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -70,6 +71,9 @@ class MyApp extends StatelessWidget {
                   future: auth.autoLogIn(),
                   builder: (context, authResult) => WelcomeScreen(),
                 ),
+          routes: {
+            MojePrijaveScreen.routeName: (context) => MojePrijaveScreen(),
+          },
         ),
       ),
     );
