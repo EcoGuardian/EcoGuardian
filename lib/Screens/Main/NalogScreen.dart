@@ -1,3 +1,4 @@
+import 'package:ecoguardian/Screens/Main/MojePrijaveScreen.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/NalogItemCard.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
@@ -54,7 +55,9 @@ class NalogScreen extends StatelessWidget {
             NalogItemCard(
               icon: TablerIcons.alert_triangle,
               text: 'Moje Prijave',
-              funkcija: () {},
+              funkcija: () {
+                Navigator.of(context).pushNamed(MojePrijaveScreen.routeName);
+              },
             ),
             SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.018),
             NalogItemCard(
