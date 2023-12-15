@@ -1,3 +1,4 @@
+import 'package:ecoguardian/Screens/Main/EditProfileScreen.dart';
 import 'package:ecoguardian/Screens/Main/MojePrijaveScreen.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/NalogItemCard.dart';
@@ -39,7 +40,9 @@ class NalogScreen extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          drugaIkonicaFunkcija: () {},
+          drugaIkonicaFunkcija: () {
+            Navigator.of(context).pushNamed(EditProfileScreen.routeName);
+          },
         ),
       ),
       body: Container(

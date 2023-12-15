@@ -2,6 +2,7 @@ import 'package:ecoguardian/BottomNavigationScreen.dart';
 import 'package:ecoguardian/Screens/Auth/ForgottenPasswordScreen.dart';
 import 'package:ecoguardian/Screens/Auth/RegisterScreen.dart';
 import 'package:ecoguardian/Screens/Auth/WelcomeScreen.dart';
+import 'package:ecoguardian/Screens/Main/EditProfileScreen.dart';
 import 'package:ecoguardian/Screens/Main/KanteScreen.dart';
 import 'package:ecoguardian/Screens/Main/MojePrijaveScreen.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
@@ -73,6 +74,7 @@ class MyApp extends StatelessWidget {
                 ),
           routes: {
             MojePrijaveScreen.routeName: (context) => MojePrijaveScreen(),
+            EditProfileScreen.routeName: (context) => EditProfileScreen(),
           },
         ),
       ),
