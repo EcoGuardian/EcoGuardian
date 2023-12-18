@@ -8,19 +8,19 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
-  String? getToken;
+  String? token;
   User? currentUser;
 
   User get getCurrentUser {
     return currentUser!;
   }
 
-  String get token {
-    return getToken!;
+  String get getToken {
+    return token!;
   }
 
   bool get isAuth {
-    if (getToken != null) {
+    if (token != null) {
       return true;
     }
 
@@ -47,11 +47,11 @@ class Auth with ChangeNotifier {
           if (responseData['success'] == false) {
             throw HttpException(responseData['data']['email'][0]);
           }
-          getToken = responseData['data']['token'];
+          token = responseData['data']['token'];
           final prefs = await SharedPreferences.getInstance();
           final userData = json.encode(
             {
-              'token': getToken,
+              'token': token,
             },
           );
           prefs.setString('userData', userData);
@@ -80,11 +80,11 @@ class Auth with ChangeNotifier {
           throw HttpException(responseData['data']);
         }
 
-        getToken = responseData['data']['token'];
+        token = responseData['data']['token'];
         final prefs = await SharedPreferences.getInstance();
         final userData = json.encode(
           {
-            'token': getToken,
+            'token': token,
           },
         );
         prefs.setString('userData', userData);
@@ -101,13 +101,13 @@ class Auth with ChangeNotifier {
       return false;
     }
     final extractedUserData = json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
-    getToken = extractedUserData['token'];
+    token = extractedUserData['token'];
     notifyListeners();
     return true;
   }
 
   Future<void> logOut() async {
-    getToken = null;
+    token = null;
     final prefs = await SharedPreferences.getInstance();
     currentUser = null;
     prefs.clear();

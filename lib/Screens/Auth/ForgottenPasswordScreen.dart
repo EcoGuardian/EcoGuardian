@@ -92,7 +92,12 @@ class _ForgottenPasswordScreenState extends State<ForgottenPasswordScreen> with 
                     validator: (value) {},
                     isLabel: true,
                     borderRadijus: 10,
-                    label: Text('Email'),
+                    label: Text(
+                      'Email',
+                      style: Theme.of(context).textTheme.headline4!.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                    ),
                     hintTextSize: 16,
                     visina: 18,
                   ),

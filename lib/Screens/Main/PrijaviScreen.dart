@@ -160,7 +160,6 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
               ),
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
               GestureDetector(
-                //key: key,
                 onTap: () {},
                 child: Container(
                     //width: sirina,
@@ -198,7 +197,6 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
               ),
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
               GestureDetector(
-                //key: key,
                 onTap: () {},
                 child: Container(
                     //width: sirina,

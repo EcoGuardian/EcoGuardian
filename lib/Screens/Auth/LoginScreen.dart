@@ -120,7 +120,12 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                             },
                             isLabel: true,
                             borderRadijus: 10,
-                            label: Text('Email'),
+                            label: Text(
+                              'Email',
+                              style: Theme.of(context).textTheme.headline4!.copyWith(
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                            ),
                             hintTextSize: 16,
                             visina: 18,
                           ),
