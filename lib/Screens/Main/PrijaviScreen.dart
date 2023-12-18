@@ -244,7 +244,7 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                 validator: (value) {},
                 isLabel: true,
                 borderRadijus: 10,
-                label: Text('Opis'),
+                label: Text('Opis', style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).colorScheme.primary),),
                 hintTextSize: 16,
                 brMinLinija: 3,
                 brMaxLinija: 10,

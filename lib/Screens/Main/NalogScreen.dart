@@ -1,3 +1,5 @@
+import 'package:ecoguardian/Screens/Main/EditProfileScreen.dart';
+import 'package:ecoguardian/Screens/Main/MojePrijaveScreen.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/NalogItemCard.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
@@ -38,7 +40,9 @@ class NalogScreen extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          drugaIkonicaFunkcija: () {},
+          drugaIkonicaFunkcija: () {
+            Navigator.of(context).pushNamed(EditProfileScreen.routeName);
+          },
         ),
       ),
       body: Container(
@@ -54,7 +58,9 @@ class NalogScreen extends StatelessWidget {
             NalogItemCard(
               icon: TablerIcons.alert_triangle,
               text: 'Moje Prijave',
-              funkcija: () {},
+              funkcija: () {
+                Navigator.of(context).pushNamed(MojePrijaveScreen.routeName);
+              },
             ),
             SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.018),
             NalogItemCard(
