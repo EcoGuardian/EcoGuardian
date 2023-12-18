@@ -139,7 +139,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       isMargin: true,
                       medijakveri: medijakveri,
                       isLabel: true,
-                      label: Text('Ime'),
+                      label: Text(
+                        'Ime',
+                        style: Theme.of(context).textTheme.headline4!.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
                       kapitulacija: TextCapitalization.sentences,
                       hintText: 'Ime',
                       inputAction: TextInputAction.next,
@@ -172,7 +177,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       isMargin: true,
                       medijakveri: medijakveri,
                       isLabel: true,
-                      label: Text('Prezime'),
+                      label: Text(
+                        'Prezime',
+                        style: Theme.of(context).textTheme.headline4!.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
                       hintText: 'Prezime',
                       kapitulacija: TextCapitalization.sentences,
                       borderRadijus: 10,
@@ -205,7 +215,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       isMargin: true,
                       isLabel: true,
                       medijakveri: medijakveri,
-                      label: Text('Email'),
+                      label: Text(
+                        'Email',
+                        style: Theme.of(context).textTheme.headline4!.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
                       hintText: 'E-mail',
                       inputAction: TextInputAction.next,
                       inputType: TextInputType.emailAddress,

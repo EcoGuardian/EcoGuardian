@@ -1,10 +1,13 @@
 import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/InputField.dart';
+import 'package:ecoguardian/providers/KanteProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:ecoguardian/models/Type.dart';
 
 class DodajKantuScreen extends StatefulWidget {
   static const String routeName = '/DodajKantuScreen';
@@ -16,8 +19,10 @@ class DodajKantuScreen extends StatefulWidget {
 }
 
 class _DodajKantuScreenState extends State<DodajKantuScreen> {
+  final _form = GlobalKey<FormState>();
   bool isCurrentPosition = false;
   LatLng currentPosition = LatLng(0, 0);
+  List<Type> types = [];
 
   @override
   void didChangeDependencies() async {
@@ -29,10 +34,39 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
     Position devicePosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     currentPosition = LatLng(devicePosition.latitude, devicePosition.longitude);
 
+    types = Provider.of<Kante>(context, listen: false).getTypes;
+
     setState(() {
       isCurrentPosition = true;
     });
   }
+
+  String? lokacijaError;
+
+  void submit() {
+    setState(() {
+      lokacijaError = null;
+    });
+
+    if (kantaData['lat'] == '' || kantaData['long'] == '') {
+      setState(() {
+        lokacijaError = 'Molimo Vas izaberite lokaciju';
+      });
+      return;
+    }
+
+    if (!_form.currentState!.validate()) {
+      return;
+    }
+    Provider.of<Kante>(context, listen: false).addKantu(lat: kantaData['lat'], long: kantaData['long'], typeId: kantaData['typeId']);
+  }
+
+  Map<String, String> kantaData = {
+    'lat': '',
+    'long': '',
+    'typeId': '',
+  };
+  String? typeId;
 
   Set<Marker> markers = {};
 
@@ -40,169 +74,162 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
 
-    final List<String> lista = ['Staklo', 'Plastika', 'Biljno', 'E-Waste'];
-    String? izabrat;
-
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size(100, 100),
-          child: CustomAppBar(
-            pageTitle: Text(
-              'Dodajte Kantu',
-              style: Theme.of(context).textTheme.headline2!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-            ),
-            isCenter: true,
-            horizontalMargin: 0.06,
-            prvaIkonica: Container(
-              padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.primary,
-                  )),
-              child: Icon(
-                TablerIcons.arrow_big_left_lines,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            prvaIkonicaFunkcija: () {
-              Navigator.pop(context);
-            },
-            drugaIkonica: Container(
-              padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.primary,
-                  )),
-              child: Icon(
-                TablerIcons.circle_check,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            drugaIkonicaFunkcija: () {
-              print('PITE');
-            },
-          ),
-        ),
-        body: Container(
-          margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-          child: Column(
-            children: [
-              SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
-              InputField(
-                medijakveri: medijakveri,
-                hintText: 'Naziv',
-                inputAction: TextInputAction.done,
-                inputType: TextInputType.name,
-                obscureText: false,
-                validator: (validator) {},
-                onSaved: (onSaved) {},
-                isMargin: true,
-                isLabel: true,
-                label: Text(
-                  'Naziv',
-                  style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.primary),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size(100, 100),
+        child: CustomAppBar(
+          pageTitle: Text(
+            'Dodajte Kantu',
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-                borderRadijus: 10,
-                visina: 18,
-              ),
-              Column(
-                children: [
+          ),
+          isCenter: true,
+          horizontalMargin: 0.06,
+          prvaIkonica: Container(
+            padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                )),
+            child: Icon(
+              TablerIcons.arrow_big_left_lines,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          prvaIkonicaFunkcija: () {
+            Navigator.pop(context);
+          },
+          drugaIkonica: Container(
+            padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                )),
+            child: Icon(
+              TablerIcons.circle_check,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          drugaIkonicaFunkcija: () {
+            submit();
+          },
+        ),
+      ),
+      body: Container(
+        margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+        child: Column(
+          children: [
+            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Dodajte lokaciju',
+                      style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.primary),
+                    ),
+                  ],
+                ),
+                SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
+                isCurrentPosition
+                    ? Container(
+                        height: 200,
+                        child: GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            target: currentPosition,
+                            zoom: 15,
+                          ),
+                          compassEnabled: false,
+                          mapToolbarEnabled: false,
+                          mapType: MapType.normal,
+                          zoomControlsEnabled: false,
+                          onTap: (position) {
+                            setState(() {
+                              markers.clear();
+                              markers.add(
+                                Marker(
+                                  markerId: MarkerId(
+                                    DateTime.now().toIso8601String(),
+                                  ),
+                                  position: position,
+                                  icon: BitmapDescriptor.defaultMarker,
+                                ),
+                              );
+                              kantaData['lat'] = position.latitude.toString();
+                              kantaData['long'] = position.longitude.toString();
+                            });
+                          },
+                          markers: markers,
+                        ),
+                      )
+                    : Container(
+                        height: 200,
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
+                if (lokacijaError != null)
                   Row(
                     children: [
                       Text(
-                        'Dodajte lokaciju',
-                        style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.primary),
+                        lokacijaError!,
+                        style: Theme.of(context).textTheme.headline4!.copyWith(
+                              color: Colors.red,
+                            ),
                       ),
                     ],
                   ),
-                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
-                  isCurrentPosition
-                      ? Container(
-                          height: 200,
-                          child: GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                              target: currentPosition,
-                              zoom: 15,
-                            ),
-                            compassEnabled: false,
-                            mapToolbarEnabled: false,
-                            mapType: MapType.normal,
-                            zoomControlsEnabled: false,
-                            onTap: (position) {
-                              setState(() {
-                                markers.clear();
-                                markers.add(
-                                  Marker(
-                                    markerId: MarkerId(
-                                      DateTime.now().toIso8601String(),
-                                    ),
-                                    position: position,
-                                    icon: BitmapDescriptor.defaultMarker,
-                                    infoWindow: InfoWindow(title: 'PITA', snippet: 'GOLEMA PITA'),
-                                  ),
-                                );
-                              });
-                            },
-                            markers: markers,
+                if (lokacijaError != null) SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
+                Button(
+                  buttonText: 'Trenutna lokacija',
+                  borderRadius: 10,
+                  visina: 18,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  isBorder: false,
+                  funkcija: () {
+                    setState(() {
+                      markers.clear();
+                      markers.add(
+                        Marker(
+                          markerId: MarkerId(
+                            DateTime.now().toIso8601String(),
                           ),
-                        )
-                      : Container(
-                          height: 200,
-                          child: Center(child: CircularProgressIndicator()),
+                          position: currentPosition,
+                          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
                         ),
-                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
-                  Button(
-                    buttonText: 'Trenutna lokacija',
-                    borderRadius: 10,
-                    visina: 18,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    isBorder: false,
-                    funkcija: () {
-                      setState(() {
-                        markers.clear();
-                        markers.add(
-                          Marker(
-                            markerId: MarkerId(
-                              DateTime.now().toIso8601String(),
-                            ),
-                            position: currentPosition,
-                            icon: BitmapDescriptor.defaultMarker,
-                            infoWindow: InfoWindow(title: 'PITA', snippet: 'GOLEMA PITA'),
-                          ),
-                        );
-                        print(markers.length);
-                      });
-                    },
-                    icon: const Icon(
-                      TablerIcons.map_pin_filled,
-                      color: Colors.white,
-                    ),
+                      );
+                      kantaData['lat'] = currentPosition.latitude.toString();
+                      kantaData['long'] = currentPosition.longitude.toString();
+                    });
+                  },
+                  icon: const Icon(
+                    TablerIcons.map_pin_filled,
+                    color: Colors.white,
                   ),
-                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.01),
-                ],
-              ),
-              SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'Izaberite tip kante',
-                        style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.primary),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.015),
-                  DropdownButtonFormField(
+                ),
+                SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.01),
+              ],
+            ),
+            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Izaberite tip kante',
+                      style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.primary),
+                    )
+                  ],
+                ),
+                SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.015),
+                Form(
+                  key: _form,
+                  child: DropdownButtonFormField(
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                       enabledBorder: OutlineInputBorder(
@@ -225,26 +252,27 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
                             color: Colors.grey,
                           ),
                     ),
-                    value: izabrat,
+                    value: typeId,
                     onChanged: (String? newValue) {
                       setState(() {
-                        izabrat = newValue!;
+                        typeId = newValue!;
+                        kantaData['typeId'] = newValue;
                       });
                     },
                     iconSize: 0,
-                    items: lista
+                    items: types
                         .map(
                           (item) => DropdownMenuItem(
-                            child: Text(item),
-                            value: item,
+                            child: Text(item.name),
+                            value: item.id,
                           ),
                         )
                         .toList(),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
