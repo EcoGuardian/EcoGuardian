@@ -7,10 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:provider/provider.dart';
 
-class NalogScreen extends StatelessWidget {
+class NalogScreen extends StatefulWidget {
   static const String routeName = '/NalogScreen';
   const NalogScreen({super.key});
 
+  @override
+  State<NalogScreen> createState() => _NalogScreenState();
+}
+
+class _NalogScreenState extends State<NalogScreen> {
   @override
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
