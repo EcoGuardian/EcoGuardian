@@ -1,6 +1,7 @@
 import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/InputField.dart';
+import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/providers/KanteProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
@@ -23,6 +24,7 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
   bool isCurrentPosition = false;
   LatLng currentPosition = LatLng(0, 0);
   List<Type> types = [];
+  bool isLoading = false;
 
   @override
   void didChangeDependencies() async {
@@ -34,16 +36,21 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
     Position devicePosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     currentPosition = LatLng(devicePosition.latitude, devicePosition.longitude);
 
-    types = Provider.of<Kante>(context, listen: false).getTypes;
-
     setState(() {
       isCurrentPosition = true;
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    types = Provider.of<Kante>(context, listen: false).getTypes;
+  }
+
   String? lokacijaError;
 
-  void submit() {
+  void submit() async {
     setState(() {
       lokacijaError = null;
     });
@@ -58,7 +65,43 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
     if (!_form.currentState!.validate()) {
       return;
     }
-    Provider.of<Kante>(context, listen: false).addKantu(lat: kantaData['lat'], long: kantaData['long'], typeId: kantaData['typeId']);
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      await Provider.of<Kante>(context, listen: false).addKantu(lat: kantaData['lat'], long: kantaData['long'], typeId: kantaData['typeId']).then(
+        (value) {
+          setState(() {
+            isLoading = false;
+          });
+
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Theme.of(context).colorScheme.tertiary,
+              content: Text(
+                'Uspješno ste dodali kantu',
+                style: Theme.of(context).textTheme.headline4,
+              ),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      Metode.showErrorDialog(
+        isJednoPoredDrugog: false,
+        context: context,
+        naslov: e.toString(),
+        button1Text: 'Zatvori',
+        button1Fun: () {
+          Navigator.pop(context);
+        },
+        isButton2: false,
+      );
+    }
   }
 
   Map<String, String> kantaData = {
@@ -101,21 +144,28 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
             ),
           ),
           prvaIkonicaFunkcija: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
             Navigator.pop(context);
           },
-          drugaIkonica: Container(
-            padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.primary,
-                )),
-            child: Icon(
-              TablerIcons.circle_check,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
+          drugaIkonica: isLoading
+              ? SizedBox(
+                  height: 33,
+                  child: CircularProgressIndicator(),
+                )
+              : Container(
+                  padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary,
+                      )),
+                  child: Icon(
+                    TablerIcons.circle_check,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
           drugaIkonicaFunkcija: () {
             submit();
           },
@@ -138,34 +188,38 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
                 ),
                 SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
                 isCurrentPosition
-                    ? Container(
-                        height: 200,
-                        child: GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                            target: currentPosition,
-                            zoom: 15,
-                          ),
-                          compassEnabled: false,
-                          mapToolbarEnabled: false,
-                          mapType: MapType.normal,
-                          zoomControlsEnabled: false,
-                          onTap: (position) {
-                            setState(() {
-                              markers.clear();
-                              markers.add(
-                                Marker(
-                                  markerId: MarkerId(
-                                    DateTime.now().toIso8601String(),
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          height: 200,
+                          child: GoogleMap(
+                            initialCameraPosition: CameraPosition(
+                              target: currentPosition,
+                              zoom: 15,
+                            ),
+                            compassEnabled: false,
+                            mapToolbarEnabled: false,
+                            mapType: MapType.normal,
+                            zoomControlsEnabled: false,
+                            onTap: (position) {
+                              setState(() {
+                                markers.clear();
+                                markers.add(
+                                  Marker(
+                                    markerId: MarkerId(
+                                      DateTime.now().toIso8601String(),
+                                    ),
+                                    position: position,
+                                    icon: BitmapDescriptor.defaultMarker,
                                   ),
-                                  position: position,
-                                  icon: BitmapDescriptor.defaultMarker,
-                                ),
-                              );
-                              kantaData['lat'] = position.latitude.toString();
-                              kantaData['long'] = position.longitude.toString();
-                            });
-                          },
-                          markers: markers,
+                                );
+                                kantaData['lat'] = position.latitude.toString();
+                                kantaData['long'] = position.longitude.toString();
+                                lokacijaError = null;
+                              });
+                            },
+                            markers: markers,
+                          ),
                         ),
                       )
                     : Container(
@@ -200,11 +254,12 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
                             DateTime.now().toIso8601String(),
                           ),
                           position: currentPosition,
-                          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+                          icon: BitmapDescriptor.defaultMarker,
                         ),
                       );
                       kantaData['lat'] = currentPosition.latitude.toString();
                       kantaData['long'] = currentPosition.longitude.toString();
+                      lokacijaError = null;
                     });
                   },
                   icon: const Icon(
@@ -258,6 +313,7 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
                         typeId = newValue!;
                         kantaData['typeId'] = newValue;
                       });
+                      _form.currentState!.validate();
                     },
                     iconSize: 0,
                     items: types
