@@ -50,7 +50,7 @@ class Kante with ChangeNotifier {
     );
   }
 
-  Future<void> readKante() async {
+  Future<List<Kanta>> readKante() async {
     Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/spots');
     await http.get(
       url,
@@ -63,10 +63,11 @@ class Kante with ChangeNotifier {
       (value) {
         final response = json.decode(value.body);
         if (response['success'] != true) {
+          print('RESPONSEEEE $response');
           throw HttpException('Došlo je do greške');
         }
 
-        if (kante.isEmpty) {
+        if (kante.isEmpty && response['data'] != []) {
           for (var i = 0; i < response['data'].length; i++) {
             kante.add(
               Kanta(
@@ -75,14 +76,16 @@ class Kante with ChangeNotifier {
                 typeId: response['data'][i]['type']['id'].toString(),
                 typeName: response['data'][i]['type']['name'],
                 typeColor: response['data'][i]['type']['color'],
+                createdAt: response['data'][i]['created_at'],
               ),
             );
           }
         }
-
         notifyListeners();
+        return kante;
       },
     );
+    return kante;
   }
 
   Future<void> readTypes() async {
