@@ -75,7 +75,7 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
             isLoading = false;
           });
 
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: Theme.of(context).colorScheme.tertiary,
@@ -144,7 +144,7 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
             ),
           ),
           prvaIkonicaFunkcija: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
             Navigator.pop(context);
           },
@@ -167,6 +167,7 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
                   ),
                 ),
           drugaIkonicaFunkcija: () {
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
             submit();
           },
         ),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Metode {
   static Future<bool> checkConnection({required context}) async {
@@ -239,6 +240,63 @@ class Metode {
       default:
         return "Došlo je do greške. Molimo Vas pokušajte kasnije.";
     }
+  }
+
+  static String kanteName(typeName) {
+    if (typeName == 'Papir') {
+      return 'Kanta za reciklažu papira';
+    }
+    if (typeName == 'Plastika') {
+      return 'Kanta za reciklažu plastike';
+    }
+    if (typeName == 'Metal') {
+      return 'Kanta za reciklažu metala';
+    }
+    if (typeName == 'Staklo') {
+      return 'Kanta za reciklažu stakla';
+    }
+    if (typeName == 'Smeće') {
+      return 'Kanta za smeće';
+    }
+    return 'Kanta';
+  }
+
+  static Color listaKanteColor(color) {
+    if (color == 'hueBlue') {
+      return Colors.blue;
+    }
+    if (color == 'hueYellow') {
+      return Colors.yellow;
+    }
+    if (color == 'hueOrange') {
+      return Colors.orange;
+    }
+    if (color == 'hueGreen') {
+      return Colors.green;
+    }
+    if (color == 'hueRed') {
+      return Colors.red;
+    }
+    return Colors.black;
+  }
+
+  static BitmapDescriptor mapKanteColor(color) {
+    if (color == 'hueBlue') {
+      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+    }
+    if (color == 'hueYellow') {
+      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
+    }
+    if (color == 'hueOrange') {
+      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange);
+    }
+    if (color == 'hueGreen') {
+      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
+    }
+    if (color == 'hueRed') {
+      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+    }
+    return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure);
   }
 
   // static String? stavke(int kolicina) {
