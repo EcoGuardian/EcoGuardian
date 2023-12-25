@@ -2,7 +2,8 @@ import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/InputField.dart';
 import 'package:ecoguardian/components/metode.dart';
-import 'package:ecoguardian/providers/KanteProvider.dart';
+import 'package:ecoguardian/providers/AuthProvider.dart';
+import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:geolocator/geolocator.dart';
@@ -30,11 +31,8 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    await Geolocator.checkPermission();
-    await Geolocator.requestPermission();
-
-    Position devicePosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-    currentPosition = LatLng(devicePosition.latitude, devicePosition.longitude);
+    currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
+    types = Provider.of<GeneralProvider>(context, listen: false).getTypes;
 
     setState(() {
       isCurrentPosition = true;
@@ -44,8 +42,6 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
   @override
   void initState() {
     super.initState();
-
-    types = Provider.of<Kante>(context, listen: false).getTypes;
   }
 
   String? lokacijaError;
@@ -69,7 +65,7 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
       setState(() {
         isLoading = true;
       });
-      await Provider.of<Kante>(context, listen: false).addKantu(lat: kantaData['lat'], long: kantaData['long'], typeId: kantaData['typeId']).then(
+      await Provider.of<GeneralProvider>(context, listen: false).addKantu(lat: kantaData['lat'], long: kantaData['long'], typeId: kantaData['typeId']).then(
         (value) {
           setState(() {
             isLoading = false;

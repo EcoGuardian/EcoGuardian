@@ -6,11 +6,18 @@ import 'package:ecoguardian/Screens/Main/EditProfileScreen.dart';
 import 'package:ecoguardian/Screens/Main/KanteScreen.dart';
 import 'package:ecoguardian/Screens/Main/MojePrijaveScreen.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
-import 'package:ecoguardian/providers/KanteProvider.dart';
+import 'package:ecoguardian/providers/GeneralProvider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  );
   runApp(MyApp());
 }
 
@@ -22,9 +29,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
         ),
-        ChangeNotifierProxyProvider<Auth, Kante>(
-          update: (ctx, auth, prosliProizvodi) => Kante(auth.getToken),
-          create: (ctx) => Kante(''),
+        ChangeNotifierProxyProvider<Auth, GeneralProvider>(
+          update: (ctx, auth, prosliProizvodi) => GeneralProvider(auth.getToken),
+          create: (ctx) => GeneralProvider(''),
         ),
       ],
       child: Consumer<Auth>(

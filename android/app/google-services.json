@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "122877815117",
+    "project_id": "ecoguardian-9e485",
+    "storage_bucket": "ecoguardian-9e485.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122877815117:android:dfc24a5687836ef5246f04",
+        "android_client_info": {
+          "package_name": "com.example.ecoguardian"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDc9gQuHxKfyQYdP2pSjCk33uXEY9UdUW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
