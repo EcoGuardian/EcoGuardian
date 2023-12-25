@@ -57,7 +57,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
           onTap: _selectPage,
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
-          iconSize: 35,
+          iconSize: 30,
           unselectedLabelStyle: const TextStyle(
             color: Colors.black,
             fontFamily: 'Rubik',

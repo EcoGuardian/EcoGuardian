@@ -5,7 +5,7 @@ import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/models/Kanta.dart';
 import 'package:ecoguardian/models/User.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
-import 'package:ecoguardian/providers/KanteProvider.dart';
+import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:geolocator/geolocator.dart';
@@ -37,12 +37,16 @@ class _KanteScreenState extends State<KanteScreen> {
       isLoading = true;
     });
     try {
-      await Provider.of<Kante>(context, listen: false).readKante().then((value) {
-        kante = Provider.of<Kante>(context, listen: false).getKante;
+      await Provider.of<GeneralProvider>(context, listen: false).readKante().then((value) {
+        kante = Provider.of<GeneralProvider>(context, listen: false).getKante;
       });
       await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
         currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
       });
+      await Provider.of<Auth>(context, listen: false).setCurrentPosition().then((value) {
+        currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
+      });
+
       setState(() {
         isLoading = false;
       });
@@ -50,6 +54,7 @@ class _KanteScreenState extends State<KanteScreen> {
       setState(() {
         isLoading = false;
       });
+      print(e);
       Metode.showErrorDialog(
         isJednoPoredDrugog: false,
         context: context,
@@ -61,12 +66,6 @@ class _KanteScreenState extends State<KanteScreen> {
         isButton2: false,
       );
     }
-
-    await Geolocator.checkPermission();
-    await Geolocator.requestPermission();
-
-    Position devicePosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-    currentPosition = LatLng(devicePosition.latitude, devicePosition.longitude);
 
     if (kante.isNotEmpty) {
       for (var i = 0; i < kante.length; i++) {
@@ -94,140 +93,140 @@ class _KanteScreenState extends State<KanteScreen> {
     final medijakveri = MediaQuery.of(context);
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
-      child: Container(
-        child: Column(
-          children: [
-            CustomAppBar(
-              pageTitle: Text(
-                'Pregled Kanti',
-                style: Theme.of(context).textTheme.headline2!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-              ),
-              isCenter: false,
-              horizontalMargin: 0.06,
-              drugaIkonica: isLoading
-                  ? const SizedBox(
-                      height: 33,
-                      child: CircularProgressIndicator(),
-                    )
-                  : currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
-                      ? Container(
-                          padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                          child: Icon(
-                            TablerIcons.circle_plus,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          CustomAppBar(
+            pageTitle: Text(
+              'Pregled Kanti',
+              style: Theme.of(context).textTheme.headline2!.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+            ),
+            isCenter: false,
+            horizontalMargin: 0.06,
+            drugaIkonica: isLoading
+                ? const SizedBox(
+                    height: 33,
+                    child: CircularProgressIndicator(),
+                  )
+                : currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
+                    ? Container(
+                        padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
                             color: Theme.of(context).colorScheme.primary,
                           ),
-                        )
-                      : Container(
-                          padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
-                          decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.transparent,
-                              )),
-                          child: const Icon(
-                            TablerIcons.circle_check,
+                        ),
+                        child: Icon(
+                          TablerIcons.circle_plus,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      )
+                    : Container(
+                        padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+                        decoration: BoxDecoration(
                             color: Colors.transparent,
-                          ),
-                        ),
-              drugaIkonicaFunkcija: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
-                  ? () {
-                      Provider.of<Kante>(context, listen: false).readTypes();
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const DodajKantuScreen()));
-                    }
-                  : null,
-            ),
-            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
-            isCurrentPosition
-                ? Container(
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.5,
-                    margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: currentPosition,
-                          zoom: 15,
-                        ),
-                        compassEnabled: false,
-                        mapToolbarEnabled: false,
-                        mapType: MapType.normal,
-                        zoomControlsEnabled: false,
-                        markers: markeri,
-                      ),
-                    ),
-                  )
-                : Container(
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.5,
-                    child: const Center(child: CircularProgressIndicator()),
-                  ),
-            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
-            Container(
-              height: (medijakveri.size.height - medijakveri.padding.top) * 0.263,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(10),
-                  topLeft: Radius.circular(10),
-                ),
-              ),
-              child: isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ListView.builder(
-                      padding: EdgeInsets.only(top: 10),
-                      itemCount: kante.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06, vertical: 5),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
                             borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: const EdgeInsets.all(10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  const Icon(
-                                    TablerIcons.trash,
-                                    size: 33,
-                                  ),
-                                  Text(
-                                    Metode.kanteName(kante[index].typeName),
-                                    style: Theme.of(context).textTheme.headline4,
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                height: 15,
-                                width: 15,
-                                decoration: BoxDecoration(
-                                  color: Metode.listaKanteColor(kante[index].typeColor),
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
+                            border: Border.all(
+                              color: Colors.transparent,
+                            )),
+                        child: const Icon(
+                          TablerIcons.circle_check,
+                          color: Colors.transparent,
+                        ),
+                      ),
+            drugaIkonicaFunkcija: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
+                ? () async {
+                    await Provider.of<GeneralProvider>(context, listen: false).readTypes().then((value) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const DodajKantuScreen()));
+                    });
+                  }
+                : null,
+          ),
+          SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
+          isCurrentPosition
+              ? Container(
+                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.5,
+                  margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: currentPosition,
+                        zoom: 15,
+                      ),
+                      compassEnabled: false,
+                      mapToolbarEnabled: false,
+                      mapType: MapType.normal,
+                      zoomControlsEnabled: false,
+                      markers: markeri,
+                    ),
+                  ),
+                )
+              : Container(
+                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.5,
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+          SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
+          Container(
+            height: (medijakveri.size.height - medijakveri.padding.top) * 0.263,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(10),
+                topLeft: Radius.circular(10),
+              ),
             ),
-          ],
-        ),
+            child: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.only(top: 10),
+                    itemCount: kante.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06, vertical: 5),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  TablerIcons.trash,
+                                  size: 33,
+                                ),
+                                Text(
+                                  Metode.kanteName(kante[index].typeName),
+                                  style: Theme.of(context).textTheme.headline4,
+                                ),
+                              ],
+                            ),
+                            Container(
+                              height: 15,
+                              width: 15,
+                              decoration: BoxDecoration(
+                                color: Metode.listaKanteColor(kante[index].typeColor),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+          ),
+        ],
       ),
     );
   }

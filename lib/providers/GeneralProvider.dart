@@ -1,15 +1,17 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ecoguardian/components/HttpException.dart';
 import 'package:ecoguardian/models/Kanta.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoguardian/models/Type.dart';
 import 'package:http/http.dart' as http;
 
-class Kante with ChangeNotifier {
+class GeneralProvider with ChangeNotifier {
   String? token;
 
-  Kante(this.token);
+  GeneralProvider(this.token);
 
   List<Type> types = [];
 
@@ -123,5 +125,32 @@ class Kante with ChangeNotifier {
       print(e);
       throw (e);
     }
+  }
+
+  Future<void> addPrijavu({required lat, required long, required opis, required File image}) async {
+    print(image.uri);
+    Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/reports/new');
+    await http.post(
+      url,
+      body: {
+        "photo_path": "placeholder",
+        "location": "$lat, $long",
+        "description": opis,
+      },
+      headers: {
+        'Authorization': 'Bearer $token',
+        // 'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    ).then(
+      (value) async {
+        final response = json.decode(value.body);
+        print('RESPONSE $response');
+        if (response['success'] != true) {
+          throw HttpException('Došlo je do greške');
+        }
+        await FirebaseStorage.instance.ref().child('TREZAN.jpg').putFile(image);
+      },
+    );
   }
 }

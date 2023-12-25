@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:ecoguardian/models/User.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -10,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Auth with ChangeNotifier {
   String? token;
   User? currentUser;
+  LatLng currentPosition = LatLng(0, 0);
 
   User get getCurrentUser {
     return currentUser!;
@@ -25,6 +28,10 @@ class Auth with ChangeNotifier {
     }
 
     return false;
+  }
+
+  LatLng get getCurrentPosition {
+    return currentPosition;
   }
 
   Future<void> register({
@@ -139,5 +146,15 @@ class Auth with ChangeNotifier {
     } catch (e) {
       throw e;
     }
+  }
+
+  Future<void> setCurrentPosition() async {
+    await Geolocator.checkPermission();
+    await Geolocator.requestPermission();
+
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best).then((devicePosition) {
+      currentPosition = LatLng(devicePosition.latitude, devicePosition.longitude);
+    });
+    notifyListeners();
   }
 }
