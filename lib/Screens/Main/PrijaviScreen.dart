@@ -105,19 +105,45 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
     setState(() {
       isLoading = true;
     });
+    try {
+      await Provider.of<GeneralProvider>(context, listen: false)
+          .addPrijavu(
+        lat: prijavaData['lat'],
+        long: prijavaData['long'],
+        opis: prijavaData['opis'],
+        image: _storedImage!,
+      )
+          .then((value) {
+        setState(() {
+          isLoading = false;
+          _storedImage = null;
+          _form.currentState!.reset();
+          markers.clear();
+        });
 
-    await Provider.of<GeneralProvider>(context, listen: false)
-        .addPrijavu(
-      lat: prijavaData['lat'],
-      long: prijavaData['long'],
-      opis: prijavaData['opis'],
-      image: _storedImage!,
-    )
-        .then((value) {
-      setState(() {
-        isLoading = false;
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+            content: Text(
+              'Uspješno ste podnijeli prijavu!',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ),
+        );
       });
-    });
+    } catch (e) {
+      Metode.showErrorDialog(
+        isJednoPoredDrugog: false,
+        context: context,
+        naslov: 'Došlo je do greške',
+        button1Text: 'Zatvori',
+        button1Fun: () {
+          Navigator.pop(context);
+        },
+        isButton2: false,
+      );
+    }
   }
 
   Map<String, String> prijavaData = {
