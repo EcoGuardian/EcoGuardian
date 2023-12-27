@@ -129,6 +129,7 @@ class GeneralProvider with ChangeNotifier {
 
   Future<void> addPrijavu({required lat, required long, required opis, required File image}) async {
     print(image.uri);
+
     Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/reports/new');
     await http.post(
       url,
@@ -149,8 +150,27 @@ class GeneralProvider with ChangeNotifier {
         if (response['success'] != true) {
           throw HttpException('Došlo je do greške');
         }
-        await FirebaseStorage.instance.ref().child('TREZAN.jpg').putFile(image);
+
+        await FirebaseStorage.instance.ref().child('${response['data']['id']}.jpg').putFile(image).then((value) async {
+          final imageUrl = await value.ref.getDownloadURL();
+          print('IMAGGGGGG   $imageUrl');
+          final updateUrl = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${response['data']['id']}');
+          await http.patch(updateUrl, headers: {
+            'Authorization': 'Bearer $token',
+            // 'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }, body: {
+            'photo_path': imageUrl,
+          }).then((value) {
+            final response2 = json.decode(value.body);
+
+            if (response2['success'] != true) {
+              throw HttpException('Došlo je do greške');
+            }
+          });
+        });
       },
     );
+    notifyListeners();
   }
 }
