@@ -25,6 +25,7 @@ class GeneralProvider with ChangeNotifier {
   }
 
   List<Kanta> get getKante {
+    print('GETALI ${kante.length} KANTI');
     return kante;
   }
 
@@ -60,6 +61,7 @@ class GeneralProvider with ChangeNotifier {
   }
 
   Future<List<Kanta>> readKante() async {
+    List<Kanta> localKante = [];
     Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/spots');
     await http.get(
       url,
@@ -68,33 +70,31 @@ class GeneralProvider with ChangeNotifier {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-    ).then(
-      (value) {
-        final response = json.decode(value.body);
-        if (response['success'] != true) {
-          print('RESPONSEEEE $response');
-          throw HttpException('Došlo je do greške');
-        }
+    ).then((value) {
+      final response = json.decode(value.body);
 
-        if (kante.isEmpty && response['data'] != []) {
-          for (var i = 0; i < response['data'].length; i++) {
-            kante.add(
-              Kanta(
-                latitude: response['data'][i]['location']['lat'],
-                longitude: response['data'][i]['location']['long'],
-                typeId: response['data'][i]['type']['id'].toString(),
-                typeName: response['data'][i]['type']['name'],
-                typeColor: response['data'][i]['type']['color'],
-                createdAt: response['data'][i]['created_at'],
-              ),
-            );
-          }
-        }
-        notifyListeners();
-        return kante;
-      },
-    );
-    return kante;
+      if (response['success'] != true && response['data'] != 'No spots yet!') {
+        throw HttpException('Došlo je do greške');
+      }
+      if (response['data'] == 'No spots yet!') {
+        return [];
+      }
+
+      for (var i = 0; i < response['data'].length; i++) {
+        localKante.add(
+          Kanta(
+            lat: response['data'][i]['location']['lat'],
+            long: response['data'][i]['location']['long'],
+            typeId: response['data'][i]['type']['id'].toString(),
+            typeName: response['data'][i]['type']['name'],
+            typeColor: response['data'][i]['type']['color'],
+            createdAt: response['data'][i]['created_at'],
+          ),
+        );
+      }
+      return localKante;
+    });
+    return localKante;
   }
 
   Future<void> readTypes() async {
@@ -186,8 +186,9 @@ class GeneralProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> readPrijave() async {
+  Future<List<Prijava>> readPrijave() async {
     final url = Uri.parse('https://ecoguardian.oarman.tech/api/reports');
+    List<Prijava> localPrijave = [];
 
     await http.get(
       url,
@@ -198,33 +199,31 @@ class GeneralProvider with ChangeNotifier {
       },
     ).then((value) {
       final response = json.decode(value.body);
-      print(response);
+
       if (response['success'] != true && response['data'] != 'No reports yet!') {
         throw HttpException('Došlo je do greške');
       }
       if (response['data'] == 'No reports yet!') {
-        return;
-      }
-      if (prijave.isEmpty) {
-        for (var i = 0; i < response['data'].length; i++) {
-          int zarez = response['data'][i]['location'].toString().indexOf(',');
-
-          prijave.add(
-            Prijava(
-              id: response['data'][i]['id'].toString(),
-              userId: response['data'][i]['user']['id'].toString(),
-              imageUrl: response['data'][i]['photo_path'],
-              lat: response['data'][i]['location'].toString().substring(0, zarez),
-              long: response['data'][i]['location'].toString().substring(zarez + 2, response['data'][i]['location'].toString().length),
-              description: response['data'][i]['description'],
-              status: response['data'][i]['status'],
-              createdAt: DateTime.parse(response['data'][i]['created_at']),
-            ),
-          );
-        }
+        return [];
       }
 
-      notifyListeners();
+      for (var i = 0; i < response['data'].length; i++) {
+        int zarez = response['data'][i]['location'].toString().indexOf(',');
+        localPrijave.add(
+          Prijava(
+            id: response['data'][i]['id'].toString(),
+            userId: response['data'][i]['user']['id'].toString(),
+            imageUrl: response['data'][i]['photo_path'],
+            lat: response['data'][i]['location'].toString().substring(0, zarez),
+            long: response['data'][i]['location'].toString().substring(zarez + 2, response['data'][i]['location'].toString().length),
+            description: response['data'][i]['description'],
+            status: response['data'][i]['status'],
+            createdAt: DateTime.parse(response['data'][i]['created_at']),
+          ),
+        );
+      }
+      return localPrijave;
     });
+    return localPrijave;
   }
 }

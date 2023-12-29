@@ -3,12 +3,8 @@ import 'package:ecoguardian/Screens/Main/KanteScreen.dart';
 import 'package:ecoguardian/Screens/Main/NalogScreen.dart';
 import 'package:ecoguardian/Screens/Main/PrijaviScreen.dart';
 import 'package:ecoguardian/models/User.dart';
-import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
-
-import 'package:provider/provider.dart';
 
 class BottomNavigationScreen extends StatefulWidget {
   const BottomNavigationScreen({super.key});
@@ -19,14 +15,6 @@ class BottomNavigationScreen extends StatefulWidget {
 
 class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   User? currentUser;
-
-  @override
-  void didChangeDependencies() async {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken);
-    await Provider.of<Auth>(context, listen: false).setCurrentPosition();
-  }
 
   final List<Widget> _pagesAdmin = [
     KanteScreen(),

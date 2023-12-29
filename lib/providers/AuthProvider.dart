@@ -154,7 +154,7 @@ class Auth with ChangeNotifier {
 
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best).then((devicePosition) {
       currentPosition = LatLng(devicePosition.latitude, devicePosition.longitude);
+      notifyListeners();
     });
-    notifyListeners();
   }
 }
