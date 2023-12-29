@@ -66,7 +66,8 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    currentPosition = Provider.of<Auth>(context).getCurrentPosition;
+    // currentPosition = Provider.of<Auth>(context).getCurrentPosition;
+    currentPosition = LatLng(43.073480, 19.771571);
     setState(() {
       isCurrentPosition = true;
     });
@@ -133,6 +134,9 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
         );
       });
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       Metode.showErrorDialog(
         isJednoPoredDrugog: false,
         context: context,

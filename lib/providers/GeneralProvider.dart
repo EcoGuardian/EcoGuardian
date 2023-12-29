@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:ecoguardian/components/HttpException.dart';
 import 'package:ecoguardian/models/Kanta.dart';
+import 'package:ecoguardian/models/Prijava.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoguardian/models/Type.dart';
@@ -17,12 +18,18 @@ class GeneralProvider with ChangeNotifier {
 
   List<Kanta> kante = [];
 
+  List<Prijava> prijave = [];
+
   List<Type> get getTypes {
     return types;
   }
 
   List<Kanta> get getKante {
     return kante;
+  }
+
+  List<Prijava> get getPrijave {
+    return prijave;
   }
 
   Future<void> addKantu({required lat, required long, required typeId}) async {
@@ -134,9 +141,10 @@ class GeneralProvider with ChangeNotifier {
     await http.post(
       url,
       body: {
-        "photo_path": "placeholder",
-        "location": "$lat, $long",
-        "description": opis,
+        'photo_path': 'placeholder',
+        'location': '$lat, $long',
+        'description': opis,
+        'status': 'Neriješena',
       },
       headers: {
         'Authorization': 'Bearer $token',
@@ -155,13 +163,17 @@ class GeneralProvider with ChangeNotifier {
           final imageUrl = await value.ref.getDownloadURL();
           print('IMAGGGGGG   $imageUrl');
           final updateUrl = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${response['data']['id']}');
-          await http.patch(updateUrl, headers: {
-            'Authorization': 'Bearer $token',
-            // 'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          }, body: {
-            'photo_path': imageUrl,
-          }).then((value) {
+          await http.patch(
+            updateUrl,
+            headers: {
+              'Authorization': 'Bearer $token',
+              // 'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: {
+              'photo_path': imageUrl,
+            },
+          ).then((value) {
             final response2 = json.decode(value.body);
 
             if (response2['success'] != true) {
@@ -172,5 +184,47 @@ class GeneralProvider with ChangeNotifier {
       },
     );
     notifyListeners();
+  }
+
+  Future<void> readPrijave() async {
+    final url = Uri.parse('https://ecoguardian.oarman.tech/api/reports');
+
+    await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        // 'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    ).then((value) {
+      final response = json.decode(value.body);
+      print(response);
+      if (response['success'] != true && response['data'] != 'No reports yet!') {
+        throw HttpException('Došlo je do greške');
+      }
+      if (response['data'] == 'No reports yet!') {
+        return;
+      }
+      if (prijave.isEmpty) {
+        for (var i = 0; i < response['data'].length; i++) {
+          int zarez = response['data'][i]['location'].toString().indexOf(',');
+
+          prijave.add(
+            Prijava(
+              id: response['data'][i]['id'].toString(),
+              userId: response['data'][i]['user']['id'].toString(),
+              imageUrl: response['data'][i]['photo_path'],
+              lat: response['data'][i]['location'].toString().substring(0, zarez),
+              long: response['data'][i]['location'].toString().substring(zarez + 2, response['data'][i]['location'].toString().length),
+              description: response['data'][i]['description'],
+              status: response['data'][i]['status'],
+              createdAt: DateTime.parse(response['data'][i]['created_at']),
+            ),
+          );
+        }
+      }
+
+      notifyListeners();
+    });
   }
 }

@@ -1,4 +1,4 @@
-import 'package:ecoguardian/Screens/Main/EditProfileScreen.dart';
+import 'package:ecoguardian/Screens/Nalog/EditProfileScreen.dart';
 import 'package:ecoguardian/Screens/Main/MojePrijaveScreen.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/NalogItemCard.dart';

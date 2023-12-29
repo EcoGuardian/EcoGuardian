@@ -2,6 +2,7 @@ import 'package:ecoguardian/Screens/Main/AktivnostiScreen.dart';
 import 'package:ecoguardian/Screens/Main/KanteScreen.dart';
 import 'package:ecoguardian/Screens/Main/NalogScreen.dart';
 import 'package:ecoguardian/Screens/Main/PrijaviScreen.dart';
+import 'package:ecoguardian/models/User.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,6 +18,22 @@ class BottomNavigationScreen extends StatefulWidget {
 }
 
 class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
+  User? currentUser;
+
+  @override
+  void didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken);
+    await Provider.of<Auth>(context, listen: false).setCurrentPosition();
+  }
+
+  final List<Widget> _pagesAdmin = [
+    KanteScreen(),
+    PrijaviScreen(),
+    AktivnostiScreen(),
+    NalogScreen(),
+  ];
   final List<Widget> _pages = [
     KanteScreen(),
     PrijaviScreen(),
@@ -41,7 +58,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
     final medijakveri = MediaQuery.of(context);
 
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: _pagesAdmin[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
