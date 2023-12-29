@@ -7,6 +7,7 @@ class Button extends StatelessWidget {
   final double visina;
   final double? fontsize;
   final double? sirina;
+  final double okoTeksta;
   final double borderRadius;
   final Function funkcija;
   final Widget? icon;
@@ -22,6 +23,7 @@ class Button extends StatelessWidget {
     this.sirina,
     this.textColor = Colors.white,
     this.icon,
+    this.okoTeksta = 0,
   });
 
   @override
@@ -32,6 +34,7 @@ class Button extends StatelessWidget {
         width: sirina,
         padding: EdgeInsets.symmetric(
           vertical: visina,
+          horizontal: okoTeksta,
         ),
         decoration: BoxDecoration(
           color: backgroundColor,

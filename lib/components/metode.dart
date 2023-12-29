@@ -263,7 +263,7 @@ class Metode {
 
   static Color listaKanteColor(color) {
     if (color == 'hueBlue') {
-      return Colors.blue;
+      return Colors.blue.shade900;
     }
     if (color == 'hueYellow') {
       return Colors.yellow;

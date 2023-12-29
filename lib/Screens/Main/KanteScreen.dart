@@ -37,14 +37,13 @@ class _KanteScreenState extends State<KanteScreen> {
       isLoading = true;
     });
     try {
-      await Provider.of<GeneralProvider>(context, listen: false).readKante().then((value) {
-        kante = Provider.of<GeneralProvider>(context, listen: false).getKante;
-      });
-      await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
+      setState(() {
+        currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
         currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
       });
-      await Provider.of<Auth>(context, listen: false).setCurrentPosition().then((value) {
-        currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
+
+      await Provider.of<GeneralProvider>(context, listen: false).readKante().then((value) {
+        kante = Provider.of<GeneralProvider>(context, listen: false).getKante;
       });
 
       setState(() {
@@ -55,16 +54,16 @@ class _KanteScreenState extends State<KanteScreen> {
         isLoading = false;
       });
       print(e);
-      Metode.showErrorDialog(
-        isJednoPoredDrugog: false,
-        context: context,
-        naslov: 'Došlo je do greške',
-        button1Text: 'Zatvori',
-        button1Fun: () {
-          Navigator.pop(context);
-        },
-        isButton2: false,
-      );
+      // Metode.showErrorDialog(
+      //   isJednoPoredDrugog: false,
+      //   context: context,
+      //   naslov: 'Došlo je do greške',
+      //   button1Text: 'Zatvori',
+      //   button1Fun: () {
+      //     Navigator.pop(context);
+      //   },
+      //   isButton2: false,
+      // );
     }
 
     if (kante.isNotEmpty) {
@@ -106,39 +105,34 @@ class _KanteScreenState extends State<KanteScreen> {
             ),
             isCenter: false,
             horizontalMargin: 0.06,
-            drugaIkonica: isLoading
-                ? const SizedBox(
-                    height: 33,
-                    child: CircularProgressIndicator(),
-                  )
-                : currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
-                    ? Container(
-                        padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        child: Icon(
-                          TablerIcons.circle_plus,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      )
-                    : Container(
-                        padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
-                        decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Colors.transparent,
-                            )),
-                        child: const Icon(
-                          TablerIcons.circle_check,
-                          color: Colors.transparent,
-                        ),
+            drugaIkonica: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
+                ? Container(
+                    padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary,
                       ),
+                    ),
+                    child: Icon(
+                      TablerIcons.circle_plus,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                : Container(
+                    padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+                    decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.transparent,
+                        )),
+                    child: const Icon(
+                      TablerIcons.circle_check,
+                      color: Colors.transparent,
+                    ),
+                  ),
             drugaIkonicaFunkcija: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
                 ? () async {
                     await Provider.of<GeneralProvider>(context, listen: false).readTypes().then((value) {
@@ -172,60 +166,82 @@ class _KanteScreenState extends State<KanteScreen> {
                   child: const Center(child: CircularProgressIndicator()),
                 ),
           SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
-          Container(
-            height: (medijakveri.size.height - medijakveri.padding.top) * 0.263,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(10),
-                topLeft: Radius.circular(10),
+          if (kante.isEmpty)
+            Container(
+              height: (medijakveri.size.height - medijakveri.padding.top) * 0.263,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  topLeft: Radius.circular(10),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  'Nema kanti',
+                  style: Theme.of(context).textTheme.headline3,
+                ),
               ),
             ),
-            child: isLoading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : ListView.builder(
-                    padding: EdgeInsets.only(top: 10),
-                    itemCount: kante.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06, vertical: 5),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.primary,
+          if (kante.isNotEmpty)
+            Container(
+              height: (medijakveri.size.height - medijakveri.padding.top) * 0.263,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  topLeft: Radius.circular(10),
+                ),
+              ),
+              child: isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ListView.builder(
+                      padding: EdgeInsets.only(top: 10),
+                      itemCount: kante.length,
+                      itemBuilder: (context, index) {
+                        if (kante.length < 1) {
+                          return Text('KURAC');
+                        }
+
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06, vertical: 5),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  TablerIcons.trash,
-                                  size: 33,
-                                ),
-                                Text(
-                                  Metode.kanteName(kante[index].typeName),
-                                  style: Theme.of(context).textTheme.headline4,
-                                ),
-                              ],
-                            ),
-                            Container(
-                              height: 15,
-                              width: 15,
-                              decoration: BoxDecoration(
-                                color: Metode.listaKanteColor(kante[index].typeColor),
-                                borderRadius: BorderRadius.circular(30),
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    TablerIcons.trash,
+                                    size: 33,
+                                  ),
+                                  Text(
+                                    Metode.kanteName(kante[index].typeName),
+                                    style: Theme.of(context).textTheme.headline4,
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-          ),
+                              Container(
+                                height: 15,
+                                width: 15,
+                                decoration: BoxDecoration(
+                                  color: Metode.listaKanteColor(kante[index].typeColor),
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+            ),
         ],
       ),
     );
