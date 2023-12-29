@@ -16,38 +16,7 @@ class MojePrijaveScreen extends StatefulWidget {
 }
 
 class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
-  List<Prijava> prijave = [];
   bool isLoading = false;
-  @override
-  void didChangeDependencies() async {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      await Provider.of<GeneralProvider>(context, listen: false).readPrijave().then((value) {
-        setState(() {
-          prijave = Provider.of<GeneralProvider>(context, listen: false).getPrijave;
-          isLoading = false;
-        });
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      Metode.showErrorDialog(
-        isJednoPoredDrugog: false,
-        context: context,
-        naslov: 'Došlo je do greške',
-        button1Text: 'Zatvori',
-        button1Fun: () {
-          Navigator.pop(context);
-        },
-        isButton2: false,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,23 +60,38 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-              height: (medijakveri.size.height - medijakveri.padding.top) * 0.91,
-              child: ListView.builder(
-                itemCount: prijave.length,
-                itemBuilder: (context, index) {
-                  return MojeAktivnostiCard(
-                    description: prijave[index].description,
-                    dateTime: prijave[index].createdAt,
-                    lat: prijave[index].lat,
-                    long: prijave[index].long,
-                    imageUrl: prijave[index].imageUrl,
-                    status: prijave[index].status,
+            FutureBuilder(
+                future: Provider.of<GeneralProvider>(context, listen: false).readPrijave(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                      height: (medijakveri.size.height - medijakveri.padding.top) * 0.91,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  List<Prijava> prijave = snapshot.data!;
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.91,
+                    child: ListView.builder(
+                      itemCount: prijave.length,
+                      itemBuilder: (context, index) {
+                        return MojeAktivnostiCard(
+                          description: prijave[index].description,
+                          dateTime: prijave[index].createdAt,
+                          lat: prijave[index].lat,
+                          long: prijave[index].long,
+                          imageUrl: prijave[index].imageUrl,
+                          status: prijave[index].status,
+                        );
+                      },
+                    ),
                   );
-                },
-              ),
-            ),
+                }),
           ],
         ),
       ),
