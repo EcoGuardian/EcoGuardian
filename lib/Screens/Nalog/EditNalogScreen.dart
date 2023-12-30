@@ -4,15 +4,16 @@ import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import '../../components/CustomAppbar.dart';
 import '../../components/InputField.dart';
 
-class EditProfileScreen extends StatefulWidget {
+class EditNalogScreen extends StatefulWidget {
   static const String routeName = '/editProfile';
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditNalogScreen({Key? key}) : super(key: key);
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  State<EditNalogScreen> createState() => _EditNalogScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditNalogScreenState extends State<EditNalogScreen> {
+  Key _form = GlobalKey<FormState>();
 
   final _passwordController = TextEditingController();
 
@@ -59,9 +60,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           pageTitle: Text(
             'Uredite Nalog',
             style: Theme.of(context).textTheme.headline2!.copyWith(
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
           ),
           isCenter: true,
           horizontalMargin: 0.06,
@@ -84,15 +85,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              margin: EdgeInsets.symmetric(vertical: medijakveri.size.height * 0.02),
-              child: const Center(
-                child: SizedBox(
-                  height: 130,
-                  width: 130,
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage('https://www.google.com/search?sca_esv=588490409&sxsrf=AM9HkKk-JjRVQse3GsJ-3RHngqz43StQIg:1701901947039&q=placeholder+profile+picture&tbm=isch&source=lnms&sa=X&ved=2ahUKEwilp_vn7vuCAxXmwQIHHfEIA5IQ0pQJegQICxAB&cshid=1701901951736261&biw=1440&bih=783&dpr=1#imgrc=QDyv6al4I9VkeM'),
+            const Center(
+              child: SizedBox(
+                height: 130,
+                width: 130,
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(
+                    'https://www.google.com/search?sca_esv=588490409&sxsrf=AM9HkKk-JjRVQse3GsJ-3RHngqz43StQIg:1701901947039&q=placeholder+profile+picture&tbm=isch&source=lnms&sa=X&ved=2ahUKEwilp_vn7vuCAxXmwQIHHfEIA5IQ0pQJegQICxAB&cshid=1701901951736261&biw=1440&bih=783&dpr=1#imgrc=QDyv6al4I9VkeM',
                   ),
                 ),
               ),
@@ -101,7 +101,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               padding: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.08),
               width: double.infinity,
               child: Form(
-                //key: _form,
+                key: _form,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -111,7 +111,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           isMargin: true,
                           medijakveri: medijakveri,
                           isLabel: true,
-                          label: Text('Ime', style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.primary),),
+                          label: Text(
+                            'Ime',
+                            style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.primary),
+                          ),
                           kapitulacija: TextCapitalization.sentences,
                           hintText: 'Ime',
                           inputAction: TextInputAction.next,
@@ -126,7 +129,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           isMargin: true,
                           medijakveri: medijakveri,
                           isLabel: true,
-                          label: Text('Prezime', style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.primary),),
+                          label: Text(
+                            'Prezime',
+                            style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.primary),
+                          ),
                           kapitulacija: TextCapitalization.sentences,
                           hintText: 'Prezime',
                           inputAction: TextInputAction.next,
@@ -141,7 +147,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           isMargin: true,
                           isLabel: true,
                           medijakveri: medijakveri,
-                          label: Text('Email', style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.primary),),
+                          label: Text(
+                            'Email',
+                            style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.primary),
+                          ),
                           hintText: 'E-mail',
                           inputAction: TextInputAction.next,
                           inputType: TextInputType.emailAddress,
@@ -191,14 +200,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   hintStyle: Theme.of(context).textTheme.headline4?.copyWith(
-                                    color: Colors.grey,
-                                    fontSize: 16,
-                                  ),
+                                        color: Colors.grey,
+                                        fontSize: 16,
+                                      ),
                                   suffixIcon: pass1Node.hasFocus
                                       ? IconButton(
-                                    onPressed: () => changePassVisibility(),
-                                    icon: isPassHidden ? const Icon(TablerIcons.eye) : const Icon(TablerIcons.eye_off),
-                                  )
+                                          onPressed: () => changePassVisibility(),
+                                          icon: isPassHidden ? const Icon(TablerIcons.eye) : const Icon(TablerIcons.eye_off),
+                                        )
                                       : null,
                                 ),
                               ),

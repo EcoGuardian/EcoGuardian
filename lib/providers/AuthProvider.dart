@@ -18,8 +18,8 @@ class Auth with ChangeNotifier {
     return currentUser!;
   }
 
-  String get getToken {
-    return token!;
+  String? get getToken {
+    return token;
   }
 
   bool get isAuth {
@@ -137,6 +137,7 @@ class Auth with ChangeNotifier {
         }
 
         currentUser = User(
+          id: responseData['data']['id'].toString(),
           name: responseData['data']['name'],
           email: responseData['data']['email'],
           role: responseData['data']['role'],

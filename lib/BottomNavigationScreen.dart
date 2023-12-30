@@ -2,9 +2,12 @@ import 'package:ecoguardian/Screens/Main/AktivnostiScreen.dart';
 import 'package:ecoguardian/Screens/Main/KanteScreen.dart';
 import 'package:ecoguardian/Screens/Main/NalogScreen.dart';
 import 'package:ecoguardian/Screens/Main/PrijaviScreen.dart';
+import 'package:ecoguardian/Screens/Preduzece/SvePrijaveScreen.dart';
 import 'package:ecoguardian/models/User.dart';
+import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
+import 'package:provider/provider.dart';
 
 class BottomNavigationScreen extends StatefulWidget {
   const BottomNavigationScreen({super.key});
@@ -15,14 +18,31 @@ class BottomNavigationScreen extends StatefulWidget {
 
 class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   User? currentUser;
+  bool isLoading = false;
 
-  final List<Widget> _pagesAdmin = [
+  @override
+  void didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    setState(() {
+      isLoading = true;
+    });
+    await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
+      currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
+  final List<Widget> preduzeceScreens = [
     KanteScreen(),
-    PrijaviScreen(),
+    SvePrijaveScreen(),
     AktivnostiScreen(),
     NalogScreen(),
   ];
-  final List<Widget> _pages = [
+  final List<Widget> screens = [
     KanteScreen(),
     PrijaviScreen(),
     AktivnostiScreen(),
@@ -44,9 +64,14 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
-
     return Scaffold(
-      body: _pagesAdmin[_selectedIndex],
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
+              ? preduzeceScreens[_selectedIndex]
+              : screens[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -76,8 +101,8 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
           selectedItemColor: Theme.of(context).primaryColor,
           unselectedItemColor: Colors.black,
           showUnselectedLabels: true,
-          items: const [
-            BottomNavigationBarItem(
+          items: [
+            const BottomNavigationBarItem(
               icon: Icon(
                 TablerIcons.trash,
               ),
@@ -85,13 +110,13 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(TablerIcons.alert_triangle),
-              label: 'Prijavi',
+              label: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin' ? 'Prijave' : 'Prijavi',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(TablerIcons.calendar_month),
               label: 'Aktivnosti',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(TablerIcons.user_square),
               label: 'Nalog',
             ),
