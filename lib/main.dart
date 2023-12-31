@@ -36,6 +36,10 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<Auth>(
         builder: (context, auth, _) => MaterialApp(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child ?? Container(),
+          ),
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             scaffoldBackgroundColor: const Color(0xFFDAECDE),

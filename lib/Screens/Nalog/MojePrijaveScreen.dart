@@ -1,5 +1,5 @@
 import 'package:ecoguardian/components/CustomAppbar.dart';
-import 'package:ecoguardian/components/MojeAktivnostiCard.dart';
+import 'package:ecoguardian/components/PrijavaCard.dart';
 import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/models/Prijava.dart';
 import 'package:ecoguardian/models/User.dart';
@@ -107,7 +107,7 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
                   child: ListView.builder(
                     itemCount: mojePrijave.length,
                     itemBuilder: (context, index) {
-                      return MojeAktivnostiCard(
+                      return PrijavaCard(
                         description: mojePrijave[index].description,
                         dateTime: mojePrijave[index].createdAt,
                         lat: mojePrijave[index].lat,

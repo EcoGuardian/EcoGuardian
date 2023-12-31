@@ -39,11 +39,6 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   String? lokacijaError;
 
   void submit() async {

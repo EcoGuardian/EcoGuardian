@@ -10,6 +10,7 @@ class InputField extends StatelessWidget {
   final TextInputAction inputAction;
   final TextInputType inputType;
   final bool obscureText;
+  final bool readOnly;
   final String? Function(String?)? validator;
   final Function(String?)? onSaved;
   final Function(String?)? onChanged;
@@ -55,6 +56,7 @@ class InputField extends StatelessWidget {
     this.isFixedWidth,
     this.fixedWidth,
     this.textInputFormater,
+    this.readOnly = false,
   });
 
   @override
@@ -107,6 +109,7 @@ class InputField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(borderRadijus),
               ),
             ),
+            readOnly: readOnly,
             minLines: brMinLinija,
             maxLines: brMaxLinija,
           ),

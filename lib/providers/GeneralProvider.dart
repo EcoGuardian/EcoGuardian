@@ -226,4 +226,6 @@ class GeneralProvider with ChangeNotifier {
     });
     return localPrijave;
   }
+
+  Future<void> dodajAktivnost() async {}
 }

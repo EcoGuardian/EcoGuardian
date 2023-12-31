@@ -1,3 +1,4 @@
+import 'package:ecoguardian/Screens/Prijave/PrijavaViewScreen.dart';
 import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/providers/GeneralProvider.dart';
@@ -8,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MojeAktivnostiCard extends StatefulWidget {
+class PrijavaCard extends StatefulWidget {
   final String description;
   final DateTime dateTime;
   final String lat;
@@ -16,7 +17,7 @@ class MojeAktivnostiCard extends StatefulWidget {
   final String imageUrl;
   final String status;
 
-  MojeAktivnostiCard({
+  PrijavaCard({
     required this.description,
     required this.dateTime,
     required this.lat,
@@ -26,10 +27,10 @@ class MojeAktivnostiCard extends StatefulWidget {
   });
 
   @override
-  _MojeAktivnostiCardState createState() => _MojeAktivnostiCardState();
+  _PrijavaCardState createState() => _PrijavaCardState();
 }
 
-class _MojeAktivnostiCardState extends State<MojeAktivnostiCard> {
+class _PrijavaCardState extends State<PrijavaCard> {
   List<Placemark> mjesto = [];
   bool isLoading = false;
   @override
@@ -47,16 +48,6 @@ class _MojeAktivnostiCardState extends State<MojeAktivnostiCard> {
     });
   }
 
-  Future<void> _launchInBrowser(String juarel) async {
-    final url = Uri.parse(juarel);
-    if (!await launchUrl(
-      url,
-      mode: LaunchMode.externalApplication,
-    )) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
@@ -64,7 +55,19 @@ class _MojeAktivnostiCardState extends State<MojeAktivnostiCard> {
         ? CircularProgressIndicator()
         : GestureDetector(
             onTap: () {
-              // Provider.of<GeneralProvider>(context, listen: false).readPrijave();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PrijavaViewScreen(
+                    dateTime: widget.dateTime,
+                    description: widget.description,
+                    imageUrl: widget.imageUrl,
+                    lat: widget.lat,
+                    long: widget.long,
+                    status: widget.status,
+                  ),
+                ),
+              );
             },
             child: Container(
               margin: EdgeInsets.only(bottom: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
@@ -95,7 +98,7 @@ class _MojeAktivnostiCardState extends State<MojeAktivnostiCard> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            _launchInBrowser('https://www.google.com/maps/@${widget.lat},${widget.long},16z?entry=ttu');
+                            Metode.launchInBrowser('https://www.google.com/maps/search/?api=1&query=${widget.lat},${widget.long}');
                           },
                           child: FittedBox(
                             child: Text(
@@ -149,7 +152,7 @@ class _MojeAktivnostiCardState extends State<MojeAktivnostiCard> {
                                   isJednoPoredDrugog: false,
                                   context: context,
                                   naslov: 'Koju akciju želite da izvršite?',
-                                  button1Text: 'Izmijenite recept',
+                                  button1Text: 'Izmijenite prijavu',
                                   isButton1Icon: true,
                                   button1Icon: Icon(
                                     TablerIcons.edit,
@@ -159,7 +162,7 @@ class _MojeAktivnostiCardState extends State<MojeAktivnostiCard> {
                                     Navigator.pop(context);
                                   },
                                   isButton2: true,
-                                  button2Text: 'Izbrišite recept',
+                                  button2Text: 'Izbrišite prijavu',
                                   isButton2Icon: true,
                                   button2Icon: Icon(
                                     TablerIcons.trash_x,

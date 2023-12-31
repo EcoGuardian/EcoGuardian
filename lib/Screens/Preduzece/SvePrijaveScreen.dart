@@ -1,5 +1,5 @@
 import 'package:ecoguardian/components/CustomAppbar.dart';
-import 'package:ecoguardian/components/MojeAktivnostiCard.dart';
+import 'package:ecoguardian/components/PrijavaCard.dart';
 import 'package:ecoguardian/models/Prijava.dart';
 import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class _SvePrijaveScreenState extends State<SvePrijaveScreen> {
     final medijakveri = MediaQuery.of(context);
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size(100, (medijakveri.size.height - medijakveri.padding.top) * 0.08),
+        preferredSize: Size(100, (medijakveri.size.height - medijakveri.padding.top) * 0.084),
         child: CustomAppBar(
           pageTitle: Text(
             'Prijave',
@@ -48,45 +48,43 @@ class _SvePrijaveScreenState extends State<SvePrijaveScreen> {
           drugaIkonicaFunkcija: () {},
         ),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            FutureBuilder(
-              future: Provider.of<GeneralProvider>(context, listen: false).readPrijave(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Container(
-                    margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.82,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-
-                List<Prijava> prijave = snapshot.data!;
-
+      body: Column(
+        children: [
+          FutureBuilder(
+            future: Provider.of<GeneralProvider>(context, listen: false).readPrijave(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.82,
-                  child: ListView.builder(
-                    itemCount: prijave.length,
-                    itemBuilder: (context, index) {
-                      return MojeAktivnostiCard(
-                        description: prijave[index].description,
-                        dateTime: prijave[index].createdAt,
-                        lat: prijave[index].lat,
-                        long: prijave[index].long,
-                        imageUrl: prijave[index].imageUrl,
-                        status: prijave[index].status,
-                      );
-                    },
+                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.81,
+                  child: Center(
+                    child: CircularProgressIndicator(),
                   ),
                 );
-              },
-            ),
-          ],
-        ),
+              }
+
+              List<Prijava> prijave = snapshot.data!;
+
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                height: (medijakveri.size.height - medijakveri.padding.top) * 0.816,
+                child: ListView.builder(
+                  itemCount: prijave.length,
+                  itemBuilder: (context, index) {
+                    return PrijavaCard(
+                      description: prijave[index].description,
+                      dateTime: prijave[index].createdAt,
+                      lat: prijave[index].lat,
+                      long: prijave[index].long,
+                      imageUrl: prijave[index].imageUrl,
+                      status: prijave[index].status,
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
