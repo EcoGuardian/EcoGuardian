@@ -1,3 +1,4 @@
+import 'package:ecoguardian/Screens/Preduzece/DodajAktivnostScreen.dart';
 import 'package:ecoguardian/components/AktivnostiCardWidget.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/models/User.dart';
@@ -77,7 +78,7 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
                 ),
           drugaIkonicaFunkcija: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
               ? () async {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => const DodajKantuScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const DodajAktivnostScreen()));
                 }
               : null,
         ),
