@@ -1,5 +1,5 @@
-import 'package:ecoguardian/Screens/Nalog/EditProfileScreen.dart';
-import 'package:ecoguardian/Screens/Main/MojePrijaveScreen.dart';
+import 'package:ecoguardian/Screens/Nalog/EditNalogScreen.dart';
+import 'package:ecoguardian/Screens/Nalog/MojePrijaveScreen.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/NalogItemCard.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
@@ -46,7 +46,7 @@ class _NalogScreenState extends State<NalogScreen> {
             ),
           ),
           drugaIkonicaFunkcija: () {
-            Navigator.of(context).pushNamed(EditProfileScreen.routeName);
+            Navigator.of(context).pushNamed(EditNalogScreen.routeName);
           },
         ),
       ),

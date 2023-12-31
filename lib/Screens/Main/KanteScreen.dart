@@ -42,10 +42,9 @@ class _KanteScreenState extends State<KanteScreen> {
       });
       await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
         currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
-      });
-
-      setState(() {
-        isLoading = false;
+        setState(() {
+          isLoading = false;
+        });
       });
     } catch (e) {
       setState(() {
@@ -161,7 +160,7 @@ class _KanteScreenState extends State<KanteScreen> {
                   );
                 }
                 List<Kanta> kante = snapshot.data!;
-                if (kante.isEmpty) {
+                if (kante.isNotEmpty) {
                   for (var i = 0; i < kante.length; i++) {
                     markeri.add(
                       Marker(
@@ -186,6 +185,7 @@ class _KanteScreenState extends State<KanteScreen> {
                     ),
                   ),
                   child: ListView.builder(
+                    padding: EdgeInsets.only(top: 10),
                     itemCount: kante.length,
                     itemBuilder: (context, index) {
                       return Container(

@@ -2,9 +2,9 @@ import 'package:ecoguardian/BottomNavigationScreen.dart';
 import 'package:ecoguardian/Screens/Auth/ForgottenPasswordScreen.dart';
 import 'package:ecoguardian/Screens/Auth/RegisterScreen.dart';
 import 'package:ecoguardian/Screens/Auth/WelcomeScreen.dart';
-import 'package:ecoguardian/Screens/Nalog/EditProfileScreen.dart';
+import 'package:ecoguardian/Screens/Nalog/EditNalogScreen.dart';
 import 'package:ecoguardian/Screens/Main/KanteScreen.dart';
-import 'package:ecoguardian/Screens/Main/MojePrijaveScreen.dart';
+import 'package:ecoguardian/Screens/Nalog/MojePrijaveScreen.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -82,11 +82,11 @@ class MyApp extends StatelessWidget {
               ? const BottomNavigationScreen()
               : FutureBuilder(
                   future: auth.autoLogIn(),
-                  builder: (context, authResult) => WelcomeScreen(),
+                  builder: (context, authResult) => const WelcomeScreen(),
                 ),
           routes: {
             MojePrijaveScreen.routeName: (context) => MojePrijaveScreen(),
-            EditProfileScreen.routeName: (context) => EditProfileScreen(),
+            EditNalogScreen.routeName: (context) => EditNalogScreen(),
           },
         ),
       ),
