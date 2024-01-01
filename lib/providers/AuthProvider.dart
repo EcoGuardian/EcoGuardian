@@ -66,7 +66,7 @@ class Auth with ChangeNotifier {
         },
       );
     } catch (e) {
-      print('PITA $e');
+      throw e;
     }
   }
 
@@ -147,6 +147,37 @@ class Auth with ChangeNotifier {
     } catch (e) {
       throw e;
     }
+  }
+
+  Future<User> readUserById(token, id) async {
+    User? user;
+    Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/users/$id');
+    try {
+      await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ).then((value) {
+        final responseData = json.decode(value.body);
+        if (responseData['message'] != 'User fetched successfuly!') {
+          throw HttpException(responseData['message']);
+        }
+
+        user = User(
+          id: responseData['data']['id'].toString(),
+          name: responseData['data']['name'],
+          email: responseData['data']['email'],
+          role: responseData['data']['role'],
+        );
+        return user;
+      });
+    } catch (e) {
+      throw e;
+    }
+    return user!;
   }
 
   Future<void> setCurrentPosition() async {

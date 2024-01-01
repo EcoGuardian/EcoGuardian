@@ -46,7 +46,6 @@ class GeneralProvider with ChangeNotifier {
       },
       headers: {
         'Authorization': 'Bearer $token',
-        // 'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     ).then(
@@ -148,7 +147,6 @@ class GeneralProvider with ChangeNotifier {
       },
       headers: {
         'Authorization': 'Bearer $token',
-        // 'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     ).then(
@@ -167,7 +165,6 @@ class GeneralProvider with ChangeNotifier {
             updateUrl,
             headers: {
               'Authorization': 'Bearer $token',
-              // 'Content-Type': 'application/json',
               'Accept': 'application/json',
             },
             body: {
@@ -194,7 +191,6 @@ class GeneralProvider with ChangeNotifier {
       url,
       headers: {
         'Authorization': 'Bearer $token',
-        // 'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     ).then((value) {
@@ -225,6 +221,61 @@ class GeneralProvider with ChangeNotifier {
       return localPrijave;
     });
     return localPrijave;
+  }
+
+  Future<void> updatePrijavu({required String lat, required String long, required String description, File? image, required int id}) async {
+    final url = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${id + 1}');
+    try {
+      if (image == null) {
+        await http.patch(url, headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        }, body: {
+          'location': '$lat, $long',
+          'description': description,
+        });
+      } else {
+        await http.patch(url, headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        }, body: {
+          'location': '$lat, $long',
+          'description': description,
+        }).then(
+          (value) async {
+            final response = json.decode(value.body);
+            print('RESPONSE $response');
+            if (response['success'] != true) {
+              throw HttpException('Došlo je do greške');
+            }
+
+            await FirebaseStorage.instance.ref().child('${response['data']['id']}.jpg').putFile(image).then((value) async {
+              final imageUrl = await value.ref.getDownloadURL();
+              print('IMAGGGGGG   $imageUrl');
+              final updateUrl = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${id + 1}');
+              await http.patch(
+                updateUrl,
+                headers: {
+                  'Authorization': 'Bearer $token',
+                  'Accept': 'application/json',
+                },
+                body: {
+                  'photo_path': imageUrl,
+                },
+              ).then((value) {
+                final response2 = json.decode(value.body);
+
+                if (response2['success'] != true) {
+                  throw HttpException('Došlo je do greške');
+                }
+              });
+            });
+          },
+        );
+      }
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<void> dodajAktivnost() async {}

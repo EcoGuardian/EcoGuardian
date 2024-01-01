@@ -16,6 +16,8 @@ class PrijavaCard extends StatefulWidget {
   final String long;
   final String imageUrl;
   final String status;
+  final String id;
+  final String userId;
 
   PrijavaCard({
     required this.description,
@@ -24,6 +26,8 @@ class PrijavaCard extends StatefulWidget {
     required this.long,
     required this.imageUrl,
     required this.status,
+    required this.id,
+    required this.userId,
   });
 
   @override
@@ -59,6 +63,8 @@ class _PrijavaCardState extends State<PrijavaCard> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => PrijavaViewScreen(
+                    id: widget.id,
+                    userId: widget.userId,
                     dateTime: widget.dateTime,
                     description: widget.description,
                     imageUrl: widget.imageUrl,
@@ -145,35 +151,6 @@ class _PrijavaCardState extends State<PrijavaCard> {
                               textColor: widget.status == 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
                               isBorder: widget.status == 'Neriješena' ? true : false,
                               funkcija: () {},
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Metode.showErrorDialog(
-                                  isJednoPoredDrugog: false,
-                                  context: context,
-                                  naslov: 'Koju akciju želite da izvršite?',
-                                  button1Text: 'Izmijenite prijavu',
-                                  isButton1Icon: true,
-                                  button1Icon: Icon(
-                                    TablerIcons.edit,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                  button1Fun: () {
-                                    Navigator.pop(context);
-                                  },
-                                  isButton2: true,
-                                  button2Text: 'Izbrišite prijavu',
-                                  isButton2Icon: true,
-                                  button2Icon: Icon(
-                                    TablerIcons.trash_x,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                  button2Fun: () async {},
-                                );
-                              },
-                              child: Icon(
-                                TablerIcons.dots_vertical,
-                              ),
                             ),
                           ],
                         ),

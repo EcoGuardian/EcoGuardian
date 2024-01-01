@@ -50,13 +50,14 @@ class _SvePrijaveScreenState extends State<SvePrijaveScreen> {
       ),
       body: Column(
         children: [
+          SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
           FutureBuilder(
             future: Provider.of<GeneralProvider>(context, listen: false).readPrijave(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.81,
+                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
@@ -67,11 +68,13 @@ class _SvePrijaveScreenState extends State<SvePrijaveScreen> {
 
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                height: (medijakveri.size.height - medijakveri.padding.top) * 0.816,
+                height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
                 child: ListView.builder(
                   itemCount: prijave.length,
                   itemBuilder: (context, index) {
                     return PrijavaCard(
+                      id: index.toString(),
+                      userId: prijave[index].userId,
                       description: prijave[index].description,
                       dateTime: prijave[index].createdAt,
                       lat: prijave[index].lat,
