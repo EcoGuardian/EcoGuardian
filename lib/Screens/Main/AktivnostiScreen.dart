@@ -88,9 +88,7 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
           margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
           child: Column(
             children: [
-              SizedBox(
-                height: (medijakveri.size.height - medijakveri.padding.top) * 0.025,
-              ),
+              SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
               AktivnostiCardWidget(title: 'Čišćenje obale Lima', dateTime: DateTime(2023, 10, 24), time: TimeOfDay(hour: 10, minute: 00), location: 'Polimska, Potkrajci, Bijelo Polje', participants: 1318),
               AktivnostiCardWidget(title: 'Čišćenje obale Lima', dateTime: DateTime(2023, 10, 24), time: TimeOfDay(hour: 10, minute: 00), location: 'Polimska, Potkrajci, Bijelo Polje', participants: 1318),
               AktivnostiCardWidget(title: 'Čišćenje obale Lima', dateTime: DateTime(2023, 10, 24), time: TimeOfDay(hour: 10, minute: 00), location: 'Polimska, Potkrajci, Bijelo Polje', participants: 1318),

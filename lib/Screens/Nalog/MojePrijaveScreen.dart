@@ -79,13 +79,14 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
             FutureBuilder(
               future: Provider.of<GeneralProvider>(context, listen: false).readPrijave(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.91,
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.1,
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),
@@ -101,13 +102,28 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
                     }
                   },
                 );
+                if (mojePrijave.isEmpty) {
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
+                    child: Center(
+                      child: Text(
+                        'Nema prijava',
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                    ),
+                  );
+                }
+
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.91,
+                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
                   child: ListView.builder(
                     itemCount: mojePrijave.length,
                     itemBuilder: (context, index) {
                       return PrijavaCard(
+                        id: index.toString(),
+                        userId: (mojePrijave[index].userId),
                         description: mojePrijave[index].description,
                         dateTime: mojePrijave[index].createdAt,
                         lat: mojePrijave[index].lat,
