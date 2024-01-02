@@ -85,18 +85,6 @@ class _EditNalogScreenState extends State<EditNalogScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Center(
-              child: SizedBox(
-                height: 130,
-                width: 130,
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(
-                    'https://www.google.com/search?sca_esv=588490409&sxsrf=AM9HkKk-JjRVQse3GsJ-3RHngqz43StQIg:1701901947039&q=placeholder+profile+picture&tbm=isch&source=lnms&sa=X&ved=2ahUKEwilp_vn7vuCAxXmwQIHHfEIA5IQ0pQJegQICxAB&cshid=1701901951736261&biw=1440&bih=783&dpr=1#imgrc=QDyv6al4I9VkeM',
-                  ),
-                ),
-              ),
-            ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.08),
               width: double.infinity,

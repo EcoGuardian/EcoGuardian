@@ -84,16 +84,20 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
               future: Provider.of<GeneralProvider>(context, listen: false).readPrijave(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
+                  // print(snapshot.data);
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.1,
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
                     child: Center(
-                      child: CircularProgressIndicator(),
+                      child: Text(
+                        'Nismo našli podatke',
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
                     ),
                   );
                 }
-
                 List<Prijava> prijave = snapshot.data!;
+                print(prijave);
                 List<Prijava> mojePrijave = [];
                 prijave.forEach(
                   (element) {
@@ -102,6 +106,7 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
                     }
                   },
                 );
+                print(prijave);
                 if (mojePrijave.isEmpty) {
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),

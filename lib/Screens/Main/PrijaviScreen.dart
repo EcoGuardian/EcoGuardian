@@ -401,6 +401,9 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                       }
                       return null;
                     },
+                    onFieldSubmitted: (_) {
+                      submit();
+                    },
                     isLabel: true,
                     borderRadijus: 10,
                     label: Text(

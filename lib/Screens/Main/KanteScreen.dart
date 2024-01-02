@@ -27,7 +27,6 @@ class _KanteScreenState extends State<KanteScreen> {
   User? currentUser;
 
   Set<Marker> markeri = {};
-
   bool isLoading = false;
   @override
   void didChangeDependencies() async {
@@ -37,30 +36,54 @@ class _KanteScreenState extends State<KanteScreen> {
       isLoading = true;
     });
     try {
-      await Provider.of<Auth>(context, listen: false).setCurrentPosition().then((value) async {
-        currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
+      await Provider.of<GeneralProvider>(context).readKante().then((value) {
+        print(value);
+        if (value.isNotEmpty) {
+          for (var i = 0; i < value.length; i++) {
+            markeri.add(
+              Marker(
+                markerId: MarkerId(value[i].createdAt),
+                position: LatLng(
+                  double.parse(value[i].lat),
+                  double.parse(value[i].long),
+                ),
+                icon: Metode.mapKanteColor(value[i].typeColor),
+                infoWindow: InfoWindow(title: value[i].typeName),
+              ),
+            );
+          }
+        }
       });
-      await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
-        currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
-        setState(() {
-          isLoading = false;
+      currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
+      if (currentPosition == LatLng(0, 0)) {
+        await Provider.of<Auth>(context, listen: false).setCurrentPosition().then((value) async {
+          currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
         });
-      });
+      }
+      currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+      if (currentUser == null) {
+        await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
+          currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+          setState(() {
+            isLoading = false;
+          });
+        });
+      }
     } catch (e) {
       setState(() {
         isLoading = false;
       });
       print(e);
-      // Metode.showErrorDialog(
-      //   isJednoPoredDrugog: false,
-      //   context: context,
-      //   naslov: 'Došlo je do greške',
-      //   button1Text: 'Zatvori',
-      //   button1Fun: () {
-      //     Navigator.pop(context);
-      //   },
-      //   isButton2: false,
-      // );
+      Metode.showErrorDialog(
+        isJednoPoredDrugog: false,
+        context: context,
+        naslov: 'Došlo je do greške',
+        button1Text: 'Zatvori',
+        button1Fun: () {
+          Navigator.pop(context);
+        },
+        isButton2: false,
+      );
     }
 
     setState(() {
@@ -152,7 +175,7 @@ class _KanteScreenState extends State<KanteScreen> {
                   ),
             SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
             FutureBuilder(
-              future: Provider.of<GeneralProvider>(context, listen: false).readKante(),
+              future: Provider.of<GeneralProvider>(context).readKante(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(
@@ -160,21 +183,26 @@ class _KanteScreenState extends State<KanteScreen> {
                   );
                 }
                 List<Kanta> kante = snapshot.data!;
-                if (kante.isNotEmpty) {
-                  for (var i = 0; i < kante.length; i++) {
-                    markeri.add(
-                      Marker(
-                        markerId: MarkerId(kante[i].createdAt),
-                        position: LatLng(
-                          double.parse(kante[i].lat),
-                          double.parse(kante[i].long),
-                        ),
-                        icon: Metode.mapKanteColor(kante[i].typeColor),
-                        infoWindow: InfoWindow(title: kante[i].typeName),
+
+                if (kante.isEmpty) {
+                  return Container(
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.263,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(10),
                       ),
-                    );
-                  }
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Nismo našli podatke',
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                    ),
+                  );
                 }
+
                 return Container(
                   height: (medijakveri.size.height - medijakveri.padding.top) * 0.263,
                   decoration: const BoxDecoration(
