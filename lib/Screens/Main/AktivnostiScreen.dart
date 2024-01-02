@@ -1,8 +1,11 @@
 import 'package:ecoguardian/Screens/Preduzece/DodajAktivnostScreen.dart';
+import 'package:ecoguardian/components/AktivnostCard.dart';
 import 'package:ecoguardian/components/AktivnostiCardWidget.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
+import 'package:ecoguardian/models/Aktivnost.dart';
 import 'package:ecoguardian/models/User.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
+import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:intl/intl.dart';
@@ -24,12 +27,15 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
-      currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
-      setState(() {
-        isLoading = false;
+    currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+    if (currentUser == null) {
+      await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
+        currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+        setState(() {
+          isLoading = false;
+        });
       });
-    });
+    }
   }
 
   @override
@@ -89,9 +95,49 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
           child: Column(
             children: [
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
-              AktivnostiCardWidget(title: 'Čišćenje obale Lima', dateTime: DateTime(2023, 10, 24), time: TimeOfDay(hour: 10, minute: 00), location: 'Polimska, Potkrajci, Bijelo Polje', participants: 1318),
-              AktivnostiCardWidget(title: 'Čišćenje obale Lima', dateTime: DateTime(2023, 10, 24), time: TimeOfDay(hour: 10, minute: 00), location: 'Polimska, Potkrajci, Bijelo Polje', participants: 1318),
-              AktivnostiCardWidget(title: 'Čišćenje obale Lima', dateTime: DateTime(2023, 10, 24), time: TimeOfDay(hour: 10, minute: 00), location: 'Polimska, Potkrajci, Bijelo Polje', participants: 1318),
+              FutureBuilder(
+                future: Provider.of<GeneralProvider>(context).readAktivnosti(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                      height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  if (!snapshot.hasData) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                      height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
+                      child: Center(
+                        child: Text('Nismo našli podatke'),
+                      ),
+                    );
+                  }
+
+                  List<Aktivnost> aktivnosti = snapshot.data!;
+                  return Container(
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
+                    child: ListView.builder(
+                      itemCount: aktivnosti.length,
+                      itemBuilder: (context, i) {
+                        return AktivnostCard(
+                          naziv: aktivnosti[i].naziv,
+                          opis: aktivnosti[i].opis,
+                          lat: aktivnosti[i].lat,
+                          long: aktivnosti[i].long,
+                          datum: aktivnosti[i].datum,
+                          vrijeme: aktivnosti[i].vrijeme,
+                          likes: aktivnosti[i].likes,
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),

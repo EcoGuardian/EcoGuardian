@@ -37,6 +37,7 @@ class PrijavaCard extends StatefulWidget {
 class _PrijavaCardState extends State<PrijavaCard> {
   List<Placemark> mjesto = [];
   bool isLoading = false;
+  bool isButtonLoading = false;
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
@@ -56,7 +57,7 @@ class _PrijavaCardState extends State<PrijavaCard> {
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
     return isLoading
-        ? CircularProgressIndicator()
+        ? Center(child: SizedBox(height: 30, child: CircularProgressIndicator()))
         : GestureDetector(
             onTap: () {
               Navigator.push(
@@ -137,21 +138,39 @@ class _PrijavaCardState extends State<PrijavaCard> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Button(
-                              buttonText: widget.status,
-                              borderRadius: 10,
-                              visina: 3,
-                              okoTeksta: 20,
-                              icon: Icon(
-                                widget.status == 'Neriješena' ? TablerIcons.xbox_x : TablerIcons.circle_check,
-                                color: widget.status == 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
-                                size: 30,
-                              ),
-                              backgroundColor: widget.status != 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
-                              textColor: widget.status == 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
-                              isBorder: widget.status == 'Neriješena' ? true : false,
-                              funkcija: () {},
-                            ),
+                            isButtonLoading
+                                ? Container(
+                                    width: medijakveri.size.width * 0.5,
+                                    child: Center(child: CircularProgressIndicator()),
+                                  )
+                                : Button(
+                                    buttonText: widget.status,
+                                    borderRadius: 10,
+                                    visina: 3,
+                                    okoTeksta: 20,
+                                    icon: Icon(
+                                      widget.status == 'Neriješena' ? TablerIcons.xbox_x : TablerIcons.circle_check,
+                                      color: widget.status == 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
+                                      size: 30,
+                                    ),
+                                    backgroundColor: widget.status != 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
+                                    textColor: widget.status == 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
+                                    isBorder: widget.status == 'Neriješena' ? true : false,
+                                    funkcija: () async {
+                                      try {
+                                        setState(() {
+                                          isButtonLoading = true;
+                                        });
+                                        await Provider.of<GeneralProvider>(context, listen: false).rrijesiPrijavuBre(widget.id, widget.status).then((value) {
+                                          setState(() {
+                                            isButtonLoading = false;
+                                          });
+                                        });
+                                      } catch (e) {
+                                        print(e);
+                                      }
+                                    },
+                                  ),
                           ],
                         ),
                       ],

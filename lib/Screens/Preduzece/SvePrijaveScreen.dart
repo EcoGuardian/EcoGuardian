@@ -52,7 +52,7 @@ class _SvePrijaveScreenState extends State<SvePrijaveScreen> {
         children: [
           SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
           FutureBuilder(
-            future: Provider.of<GeneralProvider>(context, listen: false).readPrijave(),
+            future: Provider.of<GeneralProvider>(context).readPrijave(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Container(

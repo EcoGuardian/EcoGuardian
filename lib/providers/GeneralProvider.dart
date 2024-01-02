@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:ecoguardian/components/HttpException.dart';
+import 'package:ecoguardian/models/Aktivnost.dart';
 import 'package:ecoguardian/models/Kanta.dart';
 import 'package:ecoguardian/models/Prijava.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoguardian/models/Type.dart';
+import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 
 class GeneralProvider with ChangeNotifier {
@@ -25,7 +27,6 @@ class GeneralProvider with ChangeNotifier {
   }
 
   List<Kanta> get getKante {
-    print('GETALI ${kante.length} KANTI');
     return kante;
   }
 
@@ -134,8 +135,6 @@ class GeneralProvider with ChangeNotifier {
   }
 
   Future<void> addPrijavu({required lat, required long, required opis, required File image}) async {
-    print(image.uri);
-
     Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/reports/new');
     await http.post(
       url,
@@ -186,7 +185,6 @@ class GeneralProvider with ChangeNotifier {
   Future<List<Prijava>> readPrijave() async {
     final url = Uri.parse('https://ecoguardian.oarman.tech/api/reports');
     List<Prijava> localPrijave = [];
-
     await http.get(
       url,
       headers: {
@@ -195,7 +193,6 @@ class GeneralProvider with ChangeNotifier {
       },
     ).then((value) {
       final response = json.decode(value.body);
-
       if (response['success'] != true && response['data'] != 'No reports yet!') {
         throw HttpException('Došlo je do greške');
       }
@@ -244,14 +241,14 @@ class GeneralProvider with ChangeNotifier {
         }).then(
           (value) async {
             final response = json.decode(value.body);
-            print('RESPONSE $response');
+
             if (response['success'] != true) {
               throw HttpException('Došlo je do greške');
             }
 
             await FirebaseStorage.instance.ref().child('${response['data']['id']}.jpg').putFile(image).then((value) async {
               final imageUrl = await value.ref.getDownloadURL();
-              print('IMAGGGGGG   $imageUrl');
+
               final updateUrl = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${id + 1}');
               await http.patch(
                 updateUrl,
@@ -278,5 +275,103 @@ class GeneralProvider with ChangeNotifier {
     }
   }
 
-  Future<void> dodajAktivnost() async {}
+  Future<void> rrijesiPrijavuBre(id, status) async {
+    final url = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${int.parse(id) + 1}');
+    try {
+      if (status == 'Riješena') {
+        await await http.patch(url, headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        }, body: {
+          'status': 'Neriješena',
+        }).then((value) {
+          print(json.decode(value.body));
+        });
+      } else {
+        await await http.patch(url, headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        }, body: {
+          'status': 'Riješena',
+        }).then((value) {
+          print(json.decode(value.body));
+        });
+      }
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> dodajAktivnost({
+    required String naziv,
+    required String opis,
+    required String lat,
+    required String long,
+    required String datum,
+    required String vrijeme,
+  }) async {
+    final url = Uri.parse('https://ecoguardian.oarman.tech/api/events/new');
+    try {
+      await http.post(url, headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      }, body: {
+        'title': naziv,
+        'description': opis,
+        'latitude': lat,
+        'longitude': long,
+        'datetime': '$datum|||$vrijeme',
+      }).then((value) {
+        final response = json.decode(value.body);
+        if (response['success'] != true && response['data'] != 'No reports yet!') {
+          throw HttpException('Došlo je do greške');
+        }
+        if (response['success'] != true) {
+          throw HttpException('Došlo je do greške');
+        }
+      });
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<List<Aktivnost>> readAktivnosti() async {
+    List<Aktivnost> aktivnosti = [];
+    final url = Uri.parse('https://ecoguardian.oarman.tech/api/events');
+    try {
+      await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      ).then((value) {
+        final response = json.decode(value.body);
+        if (response['success'] != true) {
+          throw HttpException('Došlo je do greške');
+        }
+
+        for (var i = 0; i < response['data'].length; i++) {
+          int zarez = response['data'][i]['datetime'].indexOf('|||');
+          aktivnosti.add(
+            Aktivnost(
+              naziv: response['data'][i]['title'],
+              opis: response['data'][i]['description'],
+              lat: response['data'][i]['location']['lat'],
+              long: response['data'][i]['location']['long'],
+              datum: response['data'][i]['datetime'].substring(0, zarez),
+              vrijeme: response['data'][i]['datetime'].substring(zarez + 3, response['data'][i]['datetime'].length),
+              likes: response['data'][i]['likes'].toString(),
+            ),
+          );
+        }
+        return aktivnosti;
+      });
+
+      return aktivnosti;
+    } catch (e) {
+      throw e;
+    }
+  }
 }

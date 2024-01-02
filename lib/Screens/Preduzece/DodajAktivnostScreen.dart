@@ -4,6 +4,7 @@ import 'package:ecoguardian/components/InputField.dart';
 import 'package:ecoguardian/components/InputFieldDisabled.dart';
 import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
+import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -42,6 +43,7 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
 
   Map<String, dynamic> aktivnostData = {
     'naziv': '',
+    'opis': '',
     'datum': '',
     'vrijeme': '',
     'lat': '',
@@ -86,6 +88,31 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
     try {
       setState(() {
         isLoading = true;
+      });
+      await Provider.of<GeneralProvider>(context, listen: false)
+          .dodajAktivnost(
+        naziv: aktivnostData['naziv'],
+        opis: aktivnostData['opis'],
+        lat: aktivnostData['lat'],
+        long: aktivnostData['long'],
+        datum: aktivnostData['datum'].toString(),
+        vrijeme: aktivnostData['vrijeme'].toString(),
+      )
+          .then((value) {
+        setState(() {
+          isLoading = false;
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Theme.of(context).colorScheme.tertiary,
+              content: Text(
+                'Uspješno ste dodali aktivnost',
+                style: Theme.of(context).textTheme.headline4,
+              ),
+            ),
+          );
+          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+        });
       });
     } catch (e) {
       setState(() {
@@ -180,7 +207,7 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
               Navigator.pop(context);
             },
             drugaIkonica: isLoading
-                ? SizedBox(
+                ? const SizedBox(
                     height: 33,
                     child: CircularProgressIndicator(),
                   )
@@ -247,6 +274,40 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                               ),
                         ),
                       ),
+                      InputField(
+                        medijakveri: medijakveri,
+                        hintText: 'Opis',
+                        inputAction: TextInputAction.done,
+                        inputType: TextInputType.name,
+                        obscureText: false,
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Molimo Vas unesite opis';
+                          }
+                          if (value.trim().length > 200) {
+                            return 'Molimo Vas unesite kraći opis';
+                          }
+                          if (value.trim().length < 2) {
+                            return 'Molimo Vas unesite duži opis';
+                          }
+                        },
+                        onSaved: (value) {
+                          aktivnostData['opis'] = value!.trim();
+                        },
+                        isMargin: true,
+                        borderRadijus: 10,
+                        isLabel: true,
+                        visina: 18,
+                        kapitulacija: TextCapitalization.sentences,
+                        label: Text(
+                          'Opis',
+                          style: Theme.of(context).textTheme.headline4!.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                        ),
+                        brMinLinija: 1,
+                        brMaxLinija: 5,
+                      ),
                     ],
                   ),
                 ),
@@ -282,7 +343,6 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                     errorString: vrijemeError,
                   ),
                 ),
-                SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
                 Row(
                   children: [
                     Text(
@@ -291,7 +351,7 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
+                SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
                 isCurrentPosition
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(10),
@@ -372,6 +432,7 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                     color: Colors.white,
                   ),
                 ),
+                SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.035),
               ],
             ),
           ),

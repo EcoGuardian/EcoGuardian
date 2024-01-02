@@ -65,13 +65,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
     return Scaffold(
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
-              ? preduzeceScreens[_selectedIndex]
-              : screens[_selectedIndex],
+      body: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin' ? preduzeceScreens[_selectedIndex] : screens[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -109,7 +103,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
               label: 'Kante',
             ),
             BottomNavigationBarItem(
-              icon: Icon(TablerIcons.alert_triangle),
+              icon: const Icon(TablerIcons.alert_triangle),
               label: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin' ? 'Prijave' : 'Prijavi',
             ),
             const BottomNavigationBarItem(
