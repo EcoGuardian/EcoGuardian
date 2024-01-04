@@ -29,7 +29,6 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
     });
     await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
       currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
-
       setState(() {
         isLoading = false;
       });

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Kanta {
+  String id;
   String lat;
   String long;
   String typeId;
@@ -8,6 +9,7 @@ class Kanta {
   String typeColor;
   String createdAt;
   Kanta({
+    required this.id,
     required this.lat,
     required this.long,
     required this.typeId,

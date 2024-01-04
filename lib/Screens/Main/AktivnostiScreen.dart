@@ -1,6 +1,5 @@
 import 'package:ecoguardian/Screens/Preduzece/DodajAktivnostScreen.dart';
 import 'package:ecoguardian/components/AktivnostCard.dart';
-import 'package:ecoguardian/components/AktivnostiCardWidget.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/models/Aktivnost.dart';
 import 'package:ecoguardian/models/User.dart';
@@ -8,7 +7,6 @@ import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AktivnostiScreen extends StatefulWidget {

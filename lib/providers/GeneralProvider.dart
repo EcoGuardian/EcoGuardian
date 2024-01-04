@@ -83,6 +83,7 @@ class GeneralProvider with ChangeNotifier {
       for (var i = 0; i < response['data'].length; i++) {
         localKante.add(
           Kanta(
+            id: response['data'][i]['id'].toString(),
             lat: response['data'][i]['location']['lat'],
             long: response['data'][i]['location']['long'],
             typeId: response['data'][i]['type']['id'].toString(),
@@ -95,6 +96,29 @@ class GeneralProvider with ChangeNotifier {
       return localKante;
     });
     return localKante;
+  }
+
+  Future<void> deleteKantu(id) async {
+    Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/spots/$id');
+    try {
+      await http.delete(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ).then((value) {
+        final response = json.decode(value.body);
+        print(response);
+        if (response['success'] != true && response['data'] != 'No spots yet!') {
+          throw HttpException('Došlo je do greške');
+        }
+      });
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<void> readTypes() async {
@@ -151,14 +175,12 @@ class GeneralProvider with ChangeNotifier {
     ).then(
       (value) async {
         final response = json.decode(value.body);
-        print('RESPONSE $response');
         if (response['success'] != true) {
           throw HttpException('Došlo je do greške');
         }
 
         await FirebaseStorage.instance.ref().child('${response['data']['id']}.jpg').putFile(image).then((value) async {
           final imageUrl = await value.ref.getDownloadURL();
-          print('IMAGGGGGG   $imageUrl');
           final updateUrl = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${response['data']['id']}');
           await http.patch(
             updateUrl,
@@ -285,7 +307,10 @@ class GeneralProvider with ChangeNotifier {
         }, body: {
           'status': 'Neriješena',
         }).then((value) {
-          print(json.decode(value.body));
+          final response = json.decode(value.body);
+          if (response['success'] != true) {
+            throw HttpException('Došlo je do greške');
+          }
         });
       } else {
         await await http.patch(url, headers: {
@@ -294,7 +319,10 @@ class GeneralProvider with ChangeNotifier {
         }, body: {
           'status': 'Riješena',
         }).then((value) {
-          print(json.decode(value.body));
+          final response = json.decode(value.body);
+          if (response['success'] != true) {
+            throw HttpException('Došlo je do greške');
+          }
         });
       }
       notifyListeners();
@@ -303,7 +331,7 @@ class GeneralProvider with ChangeNotifier {
     }
   }
 
-  Future<void> dodajAktivnost({
+  Future<void> addAktivnost({
     required String naziv,
     required String opis,
     required String lat,

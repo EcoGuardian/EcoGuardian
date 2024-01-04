@@ -256,8 +256,11 @@ class Metode {
     if (typeName == 'Staklo') {
       return 'Kanta za reciklažu stakla';
     }
-    if (typeName == 'Smeće') {
-      return 'Kanta za smeće';
+    if (typeName == 'Opasne materije') {
+      return 'Kanta za reciklažu opasnih materija';
+    }
+    if (typeName == 'Otpad') {
+      return 'Kanta za otpad';
     }
     return 'Kanta';
   }
@@ -269,8 +272,8 @@ class Metode {
     if (color == 'hueYellow') {
       return Colors.yellow;
     }
-    if (color == 'hueOrange') {
-      return Colors.orange;
+    if (color == 'hueCyan') {
+      return Colors.cyan;
     }
     if (color == 'hueGreen') {
       return Colors.green;
@@ -278,24 +281,30 @@ class Metode {
     if (color == 'hueRed') {
       return Colors.red;
     }
+    if (color == 'hueMagenta') {
+      return Colors.purple.shade400;
+    }
     return Colors.black;
   }
 
   static BitmapDescriptor mapKanteColor(color) {
-    if (color == 'hueBlue') {
-      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+    if (color == 'hueGreen') {
+      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
     }
     if (color == 'hueYellow') {
       return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
     }
-    if (color == 'hueOrange') {
-      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange);
+    if (color == 'hueBlue') {
+      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
     }
-    if (color == 'hueGreen') {
-      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
+    if (color == 'hueCyan') {
+      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan);
     }
     if (color == 'hueRed') {
       return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+    }
+    if (color == 'hueMagenta') {
+      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta);
     }
     return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure);
   }

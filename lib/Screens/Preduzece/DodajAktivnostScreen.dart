@@ -5,11 +5,15 @@ import 'package:ecoguardian/components/InputFieldDisabled.dart';
 import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:ecoguardian/providers/GeneralProvider.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
 class DodajAktivnostScreen extends StatefulWidget {
   static const String routeName = '/DodajAktivnostScreen';
@@ -22,8 +26,27 @@ class DodajAktivnostScreen extends StatefulWidget {
 
 class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
   final formKey = GlobalKey<FormState>();
-  bool isLoading = false;
 
+  GoogleMapController? yourMapController;
+
+  //this is the function to load custom map style json
+  void changeMapMode(GoogleMapController mapController) {
+    getJsonFile("assets/map_style.json").then((value) => setMapStyle(value, mapController));
+  }
+
+  //helper function
+  void setMapStyle(String mapStyle, GoogleMapController mapController) {
+    mapController.setMapStyle(mapStyle);
+  }
+
+  //helper function
+  Future<String> getJsonFile(String path) async {
+    ByteData byte = await rootBundle.load(path);
+    var list = byte.buffer.asUint8List(byte.offsetInBytes, byte.lengthInBytes);
+    return utf8.decode(list);
+  }
+
+  bool isLoading = false;
   bool isCurrentPosition = false;
   LatLng currentPosition = LatLng(0, 0);
 
@@ -90,7 +113,7 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
         isLoading = true;
       });
       await Provider.of<GeneralProvider>(context, listen: false)
-          .dodajAktivnost(
+          .addAktivnost(
         naziv: aktivnostData['naziv'],
         opis: aktivnostData['opis'],
         lat: aktivnostData['lat'],
@@ -153,7 +176,6 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
         date1 = value;
         aktivnostData['datum'] = value;
       });
-      print(value);
     });
   }
 
@@ -362,10 +384,19 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                               target: currentPosition,
                               zoom: 15,
                             ),
+                            onMapCreated: (GoogleMapController c) {
+                              yourMapController = c;
+                              changeMapMode(yourMapController!);
+                            },
                             compassEnabled: false,
                             mapToolbarEnabled: false,
                             mapType: MapType.normal,
                             zoomControlsEnabled: false,
+                            myLocationButtonEnabled: true,
+                            myLocationEnabled: true,
+                            gestureRecognizers: {
+                              Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+                            },
                             onTap: (position) {
                               setState(() {
                                 markers.clear();

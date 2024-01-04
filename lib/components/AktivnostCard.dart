@@ -80,7 +80,10 @@ class _AktivnostCardState extends State<AktivnostCard> {
                 style: Theme.of(context).textTheme.headline3,
               ),
               const SizedBox(width: 5),
-              const Icon(TablerIcons.clock),
+              const Icon(
+                TablerIcons.list,
+                color: Colors.black,
+              ),
             ],
           ),
           Container(
@@ -99,7 +102,10 @@ class _AktivnostCardState extends State<AktivnostCard> {
                 style: Theme.of(context).textTheme.headline3,
               ),
               const SizedBox(width: 5),
-              const Icon(TablerIcons.clock),
+              const Icon(
+                TablerIcons.clock,
+                color: Colors.black,
+              ),
             ],
           ),
           Text(
@@ -114,10 +120,12 @@ class _AktivnostCardState extends State<AktivnostCard> {
                 style: Theme.of(context).textTheme.headline3,
               ),
               const SizedBox(width: 5),
-              const Icon(TablerIcons.map_pin_filled),
+              const Icon(
+                TablerIcons.map_pin_filled,
+                color: Colors.black,
+              ),
             ],
           ),
-          const SizedBox(height: 10),
           isLoading
               ? CircularProgressIndicator()
               : GestureDetector(
@@ -135,6 +143,7 @@ class _AktivnostCardState extends State<AktivnostCard> {
                     ),
                   ),
                 ),
+          const SizedBox(height: 10),
           Row(
             children: [
               Text(
@@ -142,7 +151,10 @@ class _AktivnostCardState extends State<AktivnostCard> {
                 style: Theme.of(context).textTheme.headline3,
               ),
               const SizedBox(width: 5),
-              const Icon(TablerIcons.users),
+              const Icon(
+                TablerIcons.users,
+                color: Colors.black,
+              ),
             ],
           ),
           const SizedBox(height: 10),
