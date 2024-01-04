@@ -9,12 +9,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
 import '../../components/InputField.dart';
 
@@ -28,6 +30,25 @@ class PrijaviScreen extends StatefulWidget {
 
 class _PrijaviScreenState extends State<PrijaviScreen> {
   final _form = GlobalKey<FormState>();
+
+  GoogleMapController? yourMapController;
+
+  //this is the function to load custom map style json
+  void changeMapMode(GoogleMapController mapController) {
+    getJsonFile("assets/map_style.json").then((value) => setMapStyle(value, mapController));
+  }
+
+  //helper function
+  void setMapStyle(String mapStyle, GoogleMapController mapController) {
+    mapController.setMapStyle(mapStyle);
+  }
+
+  //helper function
+  Future<String> getJsonFile(String path) async {
+    ByteData byte = await rootBundle.load(path);
+    var list = byte.buffer.asUint8List(byte.offsetInBytes, byte.lengthInBytes);
+    return utf8.decode(list);
+  }
 
   String? slikaValidator;
   File? _storedImage;
@@ -303,12 +324,18 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                               target: currentPosition,
                               zoom: 15,
                             ),
+                            onMapCreated: (GoogleMapController c) {
+                              yourMapController = c;
+                              changeMapMode(yourMapController!);
+                            },
                             gestureRecognizers: {
                               Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
                             },
                             compassEnabled: false,
                             mapToolbarEnabled: false,
                             mapType: MapType.normal,
+                            myLocationEnabled: true,
+                            myLocationButtonEnabled: true,
                             zoomControlsEnabled: false,
                             onTap: (position) {
                               setState(() {

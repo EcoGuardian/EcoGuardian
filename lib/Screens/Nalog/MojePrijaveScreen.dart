@@ -83,8 +83,16 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
             FutureBuilder(
               future: Provider.of<GeneralProvider>(context, listen: false).readPrijave(),
               builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
                 if (!snapshot.hasData) {
-                  // print(snapshot.data);
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
                     height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
@@ -97,7 +105,6 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
                   );
                 }
                 List<Prijava> prijave = snapshot.data!;
-                print(prijave);
                 List<Prijava> mojePrijave = [];
                 prijave.forEach(
                   (element) {
@@ -106,7 +113,6 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
                     }
                   },
                 );
-                print(prijave);
                 if (mojePrijave.isEmpty) {
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),

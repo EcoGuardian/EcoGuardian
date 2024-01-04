@@ -27,6 +27,7 @@ class CustomAppBar extends StatelessWidget {
     return isCenter
         ? SafeArea(
             child: Container(
+              height: (medijakveri.size.height - medijakveri.padding.top) * 0.088,
               margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * horizontalMargin!),
               padding: EdgeInsets.only(
                 top: (medijakveri.size.height - medijakveri.padding.top) * 0.035,
@@ -57,6 +58,7 @@ class CustomAppBar extends StatelessWidget {
           )
         : SafeArea(
             child: Container(
+              height: (medijakveri.size.height - medijakveri.padding.top) * 0.088,
               margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * horizontalMargin!),
               padding: EdgeInsets.only(
                 top: (medijakveri.size.height - medijakveri.padding.top) * 0.035,

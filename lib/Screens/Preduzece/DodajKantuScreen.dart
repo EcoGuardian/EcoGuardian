@@ -5,11 +5,13 @@ import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:ecoguardian/models/Type.dart';
+import 'dart:convert';
 
 class DodajKantuScreen extends StatefulWidget {
   static const String routeName = '/DodajKantuScreen';
@@ -26,6 +28,25 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
   LatLng currentPosition = LatLng(0, 0);
   List<Type> types = [];
   bool isLoading = false;
+
+  GoogleMapController? yourMapController;
+
+  //this is the function to load custom map style json
+  void changeMapMode(GoogleMapController mapController) {
+    getJsonFile("assets/map_style.json").then((value) => setMapStyle(value, mapController));
+  }
+
+  //helper function
+  void setMapStyle(String mapStyle, GoogleMapController mapController) {
+    mapController.setMapStyle(mapStyle);
+  }
+
+  //helper function
+  Future<String> getJsonFile(String path) async {
+    ByteData byte = await rootBundle.load(path);
+    var list = byte.buffer.asUint8List(byte.offsetInBytes, byte.lengthInBytes);
+    return utf8.decode(list);
+  }
 
   @override
   void didChangeDependencies() async {
@@ -184,15 +205,21 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
-                          height: 200,
+                          height: (medijakveri.size.height - medijakveri.padding.top) * 0.5,
                           child: GoogleMap(
                             initialCameraPosition: CameraPosition(
                               target: currentPosition,
                               zoom: 15,
                             ),
+                            onMapCreated: (GoogleMapController c) {
+                              yourMapController = c;
+                              changeMapMode(yourMapController!);
+                            },
                             compassEnabled: false,
                             mapToolbarEnabled: false,
                             mapType: MapType.normal,
+                            myLocationButtonEnabled: true,
+                            myLocationEnabled: true,
                             zoomControlsEnabled: false,
                             onTap: (position) {
                               setState(() {
