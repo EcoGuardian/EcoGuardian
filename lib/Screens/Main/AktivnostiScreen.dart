@@ -105,18 +105,19 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
                       ),
                     );
                   }
-
-                  if (!snapshot.hasData) {
+                  List<Aktivnost> aktivnosti = snapshot.data!;
+                  if (!snapshot.hasData || aktivnosti.isEmpty) {
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
                       height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
                       child: Center(
-                        child: Text('Nismo našli podatke'),
+                        child: Text(
+                          'Nismo našli podatke',
+                          style: Theme.of(context).textTheme.headline3,
+                        ),
                       ),
                     );
                   }
-
-                  List<Aktivnost> aktivnosti = snapshot.data!;
                   return Container(
                     height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
                     child: ListView.builder(

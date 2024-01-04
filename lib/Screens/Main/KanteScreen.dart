@@ -92,11 +92,13 @@ class _KanteScreenState extends State<KanteScreen> {
         });
       }
 
-      currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
       if (currentUser == null) {
-        await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
-          currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
-        });
+        currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+        if (currentUser == null) {
+          await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
+            currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+          });
+        }
       }
       setState(() {
         isLoading = false;
