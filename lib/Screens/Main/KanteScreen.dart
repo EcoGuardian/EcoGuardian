@@ -37,7 +37,6 @@ class _KanteScreenState extends State<KanteScreen> {
     });
     try {
       await Provider.of<GeneralProvider>(context).readKante().then((value) {
-        print(value);
         if (value.isNotEmpty) {
           for (var i = 0; i < value.length; i++) {
             markeri.add(
@@ -69,26 +68,14 @@ class _KanteScreenState extends State<KanteScreen> {
           });
         });
       }
+      setState(() {
+        isCurrentPosition = true;
+      });
     } catch (e) {
       setState(() {
         isLoading = false;
       });
-      print(e);
-      Metode.showErrorDialog(
-        isJednoPoredDrugog: false,
-        context: context,
-        naslov: 'Došlo je do greške',
-        button1Text: 'Zatvori',
-        button1Fun: () {
-          Navigator.pop(context);
-        },
-        isButton2: false,
-      );
     }
-
-    setState(() {
-      isCurrentPosition = true;
-    });
   }
 
   @override
