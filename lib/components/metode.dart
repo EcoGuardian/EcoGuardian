@@ -279,7 +279,7 @@ class Metode {
       return Colors.green;
     }
     if (color == 'hueRed') {
-      return Colors.red;
+      return Colors.red.shade700;
     }
     if (color == 'hueMagenta') {
       return Colors.purple.shade400;
