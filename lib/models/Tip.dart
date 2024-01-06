@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class Type {
+class Tip {
   String id;
   String name;
   String color;
-  Type({
+  Tip({
     required this.id,
     required this.name,
     required this.color,

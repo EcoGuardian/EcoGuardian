@@ -16,12 +16,13 @@ class SvePrijaveScreen extends StatefulWidget {
 }
 
 class _SvePrijaveScreenState extends State<SvePrijaveScreen> {
+  String filter = 'sve';
   @override
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size(100, (medijakveri.size.height - medijakveri.padding.top) * 0.084),
+        preferredSize: Size(100, 100),
         child: CustomAppBar(
           pageTitle: Text(
             'Prijave',
@@ -32,32 +33,116 @@ class _SvePrijaveScreenState extends State<SvePrijaveScreen> {
           ),
           isCenter: false,
           horizontalMargin: 0.06,
-          drugaIkonica: Container(
-            padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
-            decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Colors.transparent,
-                )),
-            child: const Icon(
-              TablerIcons.circle_check,
-              color: Colors.transparent,
-            ),
+          drugaIkonica: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (filter == 'rijesene') {
+                          filter = 'sve';
+                        } else {
+                          filter = 'rijesene';
+                        }
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      height: (medijakveri.size.height - medijakveri.padding.top) * 0.04,
+                      width: 100,
+                      decoration: filter != 'rijesene'
+                          ? BoxDecoration(
+                              color: Colors.white,
+                              border: Border(
+                                left: BorderSide(color: Theme.of(context).colorScheme.primary),
+                                top: BorderSide(color: Theme.of(context).colorScheme.primary),
+                                bottom: BorderSide(color: Theme.of(context).colorScheme.primary),
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10),
+                              ),
+                            )
+                          : BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10),
+                              ),
+                            ),
+                      child: Center(
+                        child: Text(
+                          'Riješene',
+                          style: Theme.of(context).textTheme.headline4!.copyWith(
+                                color: filter != 'rijesene' ? Theme.of(context).colorScheme.primary : Colors.white,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (filter == 'nerijesene') {
+                          filter = 'sve';
+                        } else {
+                          filter = 'nerijesene';
+                        }
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      height: (medijakveri.size.height - medijakveri.padding.top) * 0.04,
+                      width: 100,
+                      decoration: filter != 'nerijesene'
+                          ? BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
+                              ),
+                            )
+                          : BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
+                              ),
+                            ),
+                      child: Center(
+                        child: Text(
+                          'Neriješene',
+                          style: Theme.of(context).textTheme.headline4!.copyWith(
+                                color: filter != 'nerijesene' ? Theme.of(context).colorScheme.primary : Colors.white,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
           drugaIkonicaFunkcija: () {},
         ),
       ),
       body: Column(
         children: [
-          SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
+          Container(
+            height: (medijakveri.size.height - medijakveri.padding.top) * 0.025,
+          ),
           FutureBuilder(
-            future: Provider.of<GeneralProvider>(context).readPrijave(),
+            future: Provider.of<GeneralProvider>(context).procitajPrijave(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
+                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.787,
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
@@ -65,22 +150,93 @@ class _SvePrijaveScreenState extends State<SvePrijaveScreen> {
               }
 
               List<Prijava> prijave = snapshot.data!;
+              prijave.sort(
+                (a, b) {
+                  if (a.createdAt.isAfter(b.createdAt)) {
+                    return 0;
+                  }
+                  return 1;
+                },
+              );
+              List<Prijava> filterPrijave = [];
+              if (filter == 'rijesene') {
+                for (var i = 0; i < prijave.length; i++) {
+                  if (prijave[i].status == 'Riješena') {
+                    filterPrijave.add(
+                      Prijava(
+                        id: prijave[i].id,
+                        userId: prijave[i].userId,
+                        imageUrl: prijave[i].imageUrl,
+                        lat: prijave[i].lat,
+                        long: prijave[i].long,
+                        description: prijave[i].description,
+                        status: prijave[i].status,
+                        createdAt: prijave[i].createdAt,
+                      ),
+                    );
+                  }
+                }
+              } else if (filter == 'nerijesene') {
+                for (var i = 0; i < prijave.length; i++) {
+                  if (prijave[i].status == 'Neriješena') {
+                    filterPrijave.add(
+                      Prijava(
+                        id: prijave[i].id,
+                        userId: prijave[i].userId,
+                        imageUrl: prijave[i].imageUrl,
+                        lat: prijave[i].lat,
+                        long: prijave[i].long,
+                        description: prijave[i].description,
+                        status: prijave[i].status,
+                        createdAt: prijave[i].createdAt,
+                      ),
+                    );
+                  }
+                }
+              } else {
+                for (var i = 0; i < prijave.length; i++) {
+                  filterPrijave.add(
+                    Prijava(
+                      id: prijave[i].id,
+                      userId: prijave[i].userId,
+                      imageUrl: prijave[i].imageUrl,
+                      lat: prijave[i].lat,
+                      long: prijave[i].long,
+                      description: prijave[i].description,
+                      status: prijave[i].status,
+                      createdAt: prijave[i].createdAt,
+                    ),
+                  );
+                }
+              }
+              if (filterPrijave.isEmpty) {
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.787,
+                  child: Center(
+                    child: Text(
+                      'Nema podataka',
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
+                  ),
+                );
+              }
 
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
+                height: (medijakveri.size.height - medijakveri.padding.top) * 0.787,
                 child: ListView.builder(
-                  itemCount: prijave.length,
+                  itemCount: filterPrijave.length,
                   itemBuilder: (context, index) {
                     return PrijavaCard(
                       id: index.toString(),
-                      userId: prijave[index].userId,
-                      description: prijave[index].description,
-                      dateTime: prijave[index].createdAt,
-                      lat: prijave[index].lat,
-                      long: prijave[index].long,
-                      imageUrl: prijave[index].imageUrl,
-                      status: prijave[index].status,
+                      userId: filterPrijave[index].userId,
+                      description: filterPrijave[index].description,
+                      dateTime: filterPrijave[index].createdAt,
+                      lat: filterPrijave[index].lat,
+                      long: filterPrijave[index].long,
+                      imageUrl: filterPrijave[index].imageUrl,
+                      status: filterPrijave[index].status,
                     );
                   },
                 ),

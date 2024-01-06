@@ -94,7 +94,7 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
             children: [
               SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
               FutureBuilder(
-                future: Provider.of<GeneralProvider>(context).readAktivnosti(),
+                future: Provider.of<GeneralProvider>(context).procitajAktivnosti(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Container(
@@ -112,7 +112,7 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
                       height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
                       child: Center(
                         child: Text(
-                          'Nismo našli podatke',
+                          'Nema podataka',
                           style: Theme.of(context).textTheme.headline3,
                         ),
                       ),
@@ -124,6 +124,7 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
                       itemCount: aktivnosti.length,
                       itemBuilder: (context, i) {
                         return AktivnostCard(
+                          id: aktivnosti[i].id,
                           naziv: aktivnosti[i].naziv,
                           opis: aktivnosti[i].opis,
                           lat: aktivnosti[i].lat,
@@ -131,6 +132,7 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
                           datum: aktivnosti[i].datum,
                           vrijeme: aktivnosti[i].vrijeme,
                           likes: aktivnosti[i].likes,
+                          isLiked: aktivnosti[i].isLiked,
                         );
                       },
                     ),

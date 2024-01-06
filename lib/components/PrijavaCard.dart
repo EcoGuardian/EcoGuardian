@@ -1,4 +1,4 @@
-import 'package:ecoguardian/Screens/Prijave/PrijavaViewScreen.dart';
+import 'package:ecoguardian/Screens/Prijave/ViewPrijavuScreen.dart';
 import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/providers/GeneralProvider.dart';
@@ -63,7 +63,7 @@ class _PrijavaCardState extends State<PrijavaCard> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PrijavaViewScreen(
+                  builder: (context) => ViewPrijavuScreen(
                     id: widget.id,
                     userId: widget.userId,
                     dateTime: widget.dateTime,
@@ -141,7 +141,7 @@ class _PrijavaCardState extends State<PrijavaCard> {
                             isButtonLoading
                                 ? Container(
                                     width: medijakveri.size.width * 0.5,
-                                    child: Center(child: CircularProgressIndicator()),
+                                    child: const Center(child: CircularProgressIndicator()),
                                   )
                                 : Button(
                                     buttonText: widget.status,
@@ -149,11 +149,11 @@ class _PrijavaCardState extends State<PrijavaCard> {
                                     visina: 3,
                                     okoTeksta: 20,
                                     icon: Icon(
-                                      widget.status == 'Neriješena' ? TablerIcons.xbox_x : TablerIcons.circle_check,
+                                      widget.status == 'Neriješena' ? TablerIcons.circle_x : TablerIcons.circle_check,
                                       color: widget.status == 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
                                       size: 30,
                                     ),
-                                    backgroundColor: widget.status != 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
+                                    backgroundColor: widget.status == 'Neriješena' ? Colors.white : Theme.of(context).colorScheme.primary,
                                     textColor: widget.status == 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
                                     isBorder: widget.status == 'Neriješena' ? true : false,
                                     funkcija: () async {

@@ -81,7 +81,7 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
           children: [
             SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
             FutureBuilder(
-              future: Provider.of<GeneralProvider>(context, listen: false).readPrijave(),
+              future: Provider.of<GeneralProvider>(context, listen: false).procitajPrijave(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
@@ -98,7 +98,7 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
                     height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
                     child: Center(
                       child: Text(
-                        'Nismo našli podatke',
+                        'Nema podataka',
                         style: Theme.of(context).textTheme.headline3,
                       ),
                     ),

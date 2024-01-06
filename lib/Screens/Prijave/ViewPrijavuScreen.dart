@@ -1,4 +1,4 @@
-import 'package:ecoguardian/Screens/Prijave/PrijavaEditScreen.dart';
+import 'package:ecoguardian/Screens/Prijave/UrediPrijavuScreen.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/models/User.dart';
@@ -9,7 +9,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class PrijavaViewScreen extends StatefulWidget {
+class ViewPrijavuScreen extends StatefulWidget {
   final String description;
   final DateTime dateTime;
   final String lat;
@@ -20,7 +20,7 @@ class PrijavaViewScreen extends StatefulWidget {
   final String userId;
   static const String routeName = '/PrijavaViewScreen';
 
-  const PrijavaViewScreen({
+  const ViewPrijavuScreen({
     super.key,
     required this.description,
     required this.dateTime,
@@ -33,10 +33,10 @@ class PrijavaViewScreen extends StatefulWidget {
   });
 
   @override
-  State<PrijavaViewScreen> createState() => _PrijavaViewScreenState();
+  State<ViewPrijavuScreen> createState() => _ViewPrijavuScreenState();
 }
 
-class _PrijavaViewScreenState extends State<PrijavaViewScreen> {
+class _ViewPrijavuScreenState extends State<ViewPrijavuScreen> {
   User? currentUser;
   User? autorUser;
   List<Placemark> mjesto = [];
@@ -123,7 +123,7 @@ class _PrijavaViewScreenState extends State<PrijavaViewScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PrijavaEditScreen(
+                      builder: (context) => UrediPrijavuScreen(
                         id: widget.id,
                         imageUrl: widget.imageUrl,
                         dateTime: widget.dateTime,
@@ -158,7 +158,7 @@ class _PrijavaViewScreenState extends State<PrijavaViewScreen> {
                       children: [
                         Text(
                           'Lokacija i Datum',
-                          style: Theme.of(context).textTheme.headline3!.copyWith(
+                          style: Theme.of(context).textTheme.headline4!.copyWith(
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                         ),
@@ -233,7 +233,7 @@ class _PrijavaViewScreenState extends State<PrijavaViewScreen> {
                       children: [
                         Text(
                           'Opis',
-                          style: Theme.of(context).textTheme.headline3!.copyWith(
+                          style: Theme.of(context).textTheme.headline4!.copyWith(
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                         ),
@@ -267,7 +267,7 @@ class _PrijavaViewScreenState extends State<PrijavaViewScreen> {
                       children: [
                         Text(
                           'Prijavio',
-                          style: Theme.of(context).textTheme.headline3!.copyWith(
+                          style: Theme.of(context).textTheme.headline4!.copyWith(
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                         ),
