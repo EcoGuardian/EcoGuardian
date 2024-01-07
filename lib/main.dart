@@ -2,7 +2,7 @@ import 'package:ecoguardian/BottomNavigationScreen.dart';
 import 'package:ecoguardian/Screens/Auth/ForgottenPasswordScreen.dart';
 import 'package:ecoguardian/Screens/Auth/RegisterScreen.dart';
 import 'package:ecoguardian/Screens/Auth/WelcomeScreen.dart';
-import 'package:ecoguardian/Screens/Nalog/EditNalogScreen.dart';
+import 'package:ecoguardian/Screens/Nalog/UrediteNalogScreen.dart';
 import 'package:ecoguardian/Screens/Main/KanteScreen.dart';
 import 'package:ecoguardian/Screens/Nalog/MojePrijaveScreen.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
@@ -90,7 +90,7 @@ class MyApp extends StatelessWidget {
                 ),
           routes: {
             MojePrijaveScreen.routeName: (context) => MojePrijaveScreen(),
-            EditNalogScreen.routeName: (context) => EditNalogScreen(),
+            UrediteNalogScreen.routeName: (context) => UrediteNalogScreen(),
           },
         ),
       ),

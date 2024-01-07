@@ -229,7 +229,7 @@ class _SvePrijaveScreenState extends State<SvePrijaveScreen> {
                   itemCount: filterPrijave.length,
                   itemBuilder: (context, index) {
                     return PrijavaCard(
-                      id: index.toString(),
+                      id: filterPrijave[index].id,
                       userId: filterPrijave[index].userId,
                       description: filterPrijave[index].description,
                       dateTime: filterPrijave[index].createdAt,

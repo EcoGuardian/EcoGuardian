@@ -118,6 +118,15 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
                       ),
                     );
                   }
+                  aktivnosti.sort(
+                    (a, b) {
+                      if (a.createdAt.isAfter(b.createdAt)) {
+                        return 0;
+                      }
+                      return 1;
+                    },
+                  );
+
                   return Container(
                     height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
                     child: ListView.builder(
@@ -133,6 +142,7 @@ class _AktivnostiScreenState extends State<AktivnostiScreen> {
                           vrijeme: aktivnosti[i].vrijeme,
                           likes: aktivnosti[i].likes,
                           isLiked: aktivnosti[i].isLiked,
+                          createdAt: aktivnosti[i].createdAt,
                         );
                       },
                     ),

@@ -57,7 +57,12 @@ class _PrijavaCardState extends State<PrijavaCard> {
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
     return isLoading
-        ? Center(child: SizedBox(height: 30, child: CircularProgressIndicator()))
+        ? Center(
+            child: SizedBox(
+              height: (medijakveri.size.height - medijakveri.padding.top) * 0.48,
+              child: CircularProgressIndicator(),
+            ),
+          )
         : GestureDetector(
             onTap: () {
               Navigator.push(
@@ -77,7 +82,7 @@ class _PrijavaCardState extends State<PrijavaCard> {
               );
             },
             child: Container(
-              margin: EdgeInsets.only(bottom: (medijakveri.size.height - medijakveri.padding.top) * 0.03),
+              margin: EdgeInsets.only(bottom: 20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -167,6 +172,9 @@ class _PrijavaCardState extends State<PrijavaCard> {
                                           });
                                         });
                                       } catch (e) {
+                                        setState(() {
+                                          isButtonLoading = false;
+                                        });
                                         print(e);
                                       }
                                     },

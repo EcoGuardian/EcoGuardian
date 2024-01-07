@@ -18,6 +18,7 @@ class AktivnostCard extends StatefulWidget {
   final String vrijeme;
   final String likes;
   final bool isLiked;
+  final DateTime createdAt;
 
   AktivnostCard({
     super.key,
@@ -30,6 +31,7 @@ class AktivnostCard extends StatefulWidget {
     required this.vrijeme,
     required this.likes,
     required this.isLiked,
+    required this.createdAt,
   });
 
   @override
@@ -76,6 +78,7 @@ class _AktivnostCardState extends State<AktivnostCard> {
       ),
       child: Container(
         padding: EdgeInsets.all(10),
+        margin: EdgeInsets.only(bottom: 20),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),

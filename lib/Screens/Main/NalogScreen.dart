@@ -1,7 +1,9 @@
-import 'package:ecoguardian/Screens/Nalog/EditNalogScreen.dart';
+import 'package:ecoguardian/Screens/Nalog/UrediteNalogScreen.dart';
+import 'package:ecoguardian/Screens/Nalog/MojeAktivnostiScreen.dart';
 import 'package:ecoguardian/Screens/Nalog/MojePrijaveScreen.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/NalogItemCard.dart';
+import 'package:ecoguardian/models/User.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
@@ -16,6 +18,27 @@ class NalogScreen extends StatefulWidget {
 }
 
 class _NalogScreenState extends State<NalogScreen> {
+  User? currentUser;
+  bool isLoading = false;
+
+  @override
+  void didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    setState(() {
+      isLoading = true;
+    });
+    currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+    if (currentUser == null) {
+      await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
+        currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+        setState(() {
+          isLoading = false;
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
@@ -46,7 +69,7 @@ class _NalogScreenState extends State<NalogScreen> {
             ),
           ),
           drugaIkonicaFunkcija: () {
-            Navigator.of(context).pushNamed(EditNalogScreen.routeName);
+            Navigator.of(context).pushNamed(UrediteNalogScreen.routeName);
           },
         ),
       ),
@@ -54,20 +77,65 @@ class _NalogScreenState extends State<NalogScreen> {
         margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
         child: Column(
           children: [
+            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
+            Container(
+              padding: const EdgeInsets.all(10),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [
+                  currentUser!.profilePicture == null
+                      ? Container(
+                          height: 75,
+                          width: 75,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.tertiary,
+                            borderRadius: BorderRadius.circular(38),
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(38),
+                          child: Image.network(
+                            currentUser!.profilePicture!,
+                            height: 75,
+                            width: 75,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.01),
+                  Text(
+                    currentUser!.name,
+                    style: Theme.of(context).textTheme.headline2,
+                  ),
+                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.01),
+                  Text(
+                    currentUser!.email,
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.04),
             NalogItemCard(
               icon: TablerIcons.calendar_month,
               text: 'Moje Aktivnosti',
-              funkcija: () {},
-            ),
-            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.018),
-            NalogItemCard(
-              icon: TablerIcons.alert_triangle,
-              text: 'Moje Prijave',
               funkcija: () {
-                Navigator.of(context).pushNamed(MojePrijaveScreen.routeName);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MojeAktivnostiScreen()));
               },
             ),
             SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.018),
+            if (currentUser!.role == 'Default')
+              NalogItemCard(
+                icon: TablerIcons.alert_triangle,
+                text: 'Moje Prijave',
+                funkcija: () {
+                  Navigator.of(context).pushNamed(MojePrijaveScreen.routeName);
+                },
+              ),
+            if (currentUser!.role == 'Default') SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.018),
             NalogItemCard(
               icon: TablerIcons.logout,
               text: 'Odjavite se',

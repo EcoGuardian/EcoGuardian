@@ -3,6 +3,7 @@ import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/models/User.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
+import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:geocoding/geocoding.dart';
@@ -101,7 +102,7 @@ class _ViewPrijavuScreenState extends State<ViewPrijavuScreen> {
                         color: Theme.of(context).colorScheme.primary,
                       )),
                   child: Icon(
-                    TablerIcons.pencil,
+                    TablerIcons.dots_vertical,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 )
@@ -120,18 +121,54 @@ class _ViewPrijavuScreenState extends State<ViewPrijavuScreen> {
                 ),
           drugaIkonicaFunkcija: widget.userId == currentUser!.id
               ? () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UrediPrijavuScreen(
-                        id: widget.id,
-                        imageUrl: widget.imageUrl,
-                        dateTime: widget.dateTime,
-                        lat: widget.lat,
-                        long: widget.long,
-                        description: widget.description,
-                        status: widget.status,
-                      ),
+                  Metode.showErrorDialog(
+                    isJednoPoredDrugog: false,
+                    context: context,
+                    naslov: 'Koju akciju želite da izvršite?',
+                    button1Text: 'Uredite prijavu',
+                    button1Fun: () async {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UrediPrijavuScreen(
+                            id: widget.id,
+                            imageUrl: widget.imageUrl,
+                            dateTime: widget.dateTime,
+                            lat: widget.lat,
+                            long: widget.long,
+                            description: widget.description,
+                            status: widget.status,
+                          ),
+                        ),
+                      );
+                    },
+                    isButton1Icon: true,
+                    button1Icon: Icon(
+                      TablerIcons.pencil,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    isButton2: true,
+                    button2Text: 'Obrišite prijavu',
+                    button2Fun: () async {
+                      await Provider.of<GeneralProvider>(context, listen: false).obrisiPrijavu(widget.id).then((value) {
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Theme.of(context).colorScheme.tertiary,
+                            content: Text(
+                              'Uspješno ste obrisali prijavu',
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                          ),
+                        );
+                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                      });
+                    },
+                    isButton2Icon: true,
+                    button2Icon: Icon(
+                      TablerIcons.trash,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   );
                 }

@@ -4,6 +4,7 @@ import 'package:ecoguardian/components/InputFieldDisabled.dart';
 import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/models/User.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
+import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:geocoding/geocoding.dart';
@@ -106,7 +107,7 @@ class _ViewAktivnostScreenState extends State<ViewAktivnostScreen> {
                         color: Theme.of(context).colorScheme.primary,
                       )),
                   child: Icon(
-                    TablerIcons.pencil,
+                    TablerIcons.dots_vertical,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 )
@@ -125,18 +126,54 @@ class _ViewAktivnostScreenState extends State<ViewAktivnostScreen> {
                 ),
           drugaIkonicaFunkcija: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
               ? () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UrediAktivnostScreen(
-                        id: widget.id,
-                        naziv: widget.naziv,
-                        opis: widget.opis,
-                        datum: widget.datum,
-                        vrijeme: widget.vrijeme,
-                        lat: widget.lat,
-                        long: widget.long,
-                      ),
+                  Metode.showErrorDialog(
+                    isJednoPoredDrugog: false,
+                    context: context,
+                    naslov: 'Koju akciju želite da izvršite?',
+                    button1Text: 'Uredite aktivnost',
+                    button1Fun: () async {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UrediAktivnostScreen(
+                            id: widget.id,
+                            naziv: widget.naziv,
+                            opis: widget.opis,
+                            datum: widget.datum,
+                            vrijeme: widget.vrijeme,
+                            lat: widget.lat,
+                            long: widget.long,
+                          ),
+                        ),
+                      );
+                    },
+                    isButton1Icon: true,
+                    button1Icon: Icon(
+                      TablerIcons.pencil,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    isButton2: true,
+                    button2Text: 'Obrišite aktivnost',
+                    button2Fun: () async {
+                      await Provider.of<GeneralProvider>(context, listen: false).obrisiAktivnost(widget.id).then((value) {
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Theme.of(context).colorScheme.tertiary,
+                            content: Text(
+                              'Uspješno ste obrisali aktivnost',
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                          ),
+                        );
+                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                      });
+                    },
+                    isButton2Icon: true,
+                    button2Icon: Icon(
+                      TablerIcons.trash,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   );
                 }
