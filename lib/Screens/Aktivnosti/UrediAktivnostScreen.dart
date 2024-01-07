@@ -3,7 +3,6 @@ import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/InputField.dart';
 import 'package:ecoguardian/components/InputFieldDisabled.dart';
 import 'package:ecoguardian/components/metode.dart';
-import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -11,21 +10,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'dart:convert';
 
-class DodajAktivnostScreen extends StatefulWidget {
-  static const String routeName = '/DodajAktivnostScreen';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-  const DodajAktivnostScreen({super.key});
+class UrediAktivnostScreen extends StatefulWidget {
+  static const String routeName = '/UrediAktivnostScreen';
+  final String id;
+  final String naziv;
+  final String opis;
+  final String datum;
+  final String vrijeme;
+  final String lat;
+  final String long;
+  const UrediAktivnostScreen({
+    super.key,
+    required this.id,
+    required this.naziv,
+    required this.opis,
+    required this.datum,
+    required this.vrijeme,
+    required this.lat,
+    required this.long,
+  });
 
   @override
-  State<DodajAktivnostScreen> createState() => _DodajAktivnostScreenState();
+  State<UrediAktivnostScreen> createState() => _UrediAktivnostScreenState();
 }
 
-class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
+class _UrediAktivnostScreenState extends State<UrediAktivnostScreen> {
   final formKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   GoogleMapController? yourMapController;
 
@@ -43,23 +59,42 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
     return utf8.decode(list);
   }
 
-  bool isLoading = false;
   bool isCurrentPosition = false;
   LatLng currentPosition = LatLng(0, 0);
-
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
+    currentPosition = LatLng(double.parse(widget.lat), double.parse(widget.long));
+    if (markeri.isEmpty) {
+      markeri.add(
+        Marker(
+          markerId: MarkerId(DateTime.now().toString()),
+          position: LatLng(
+            double.parse(widget.lat),
+            double.parse(widget.long),
+          ),
+          icon: BitmapDescriptor.defaultMarker,
+        ),
+      );
+    }
     setState(() {
       isCurrentPosition = true;
     });
   }
 
-  String lokacijaError = '';
-  String datumError = '';
-  String vrijemeError = '';
+  @override
+  void initState() {
+    super.initState();
+    aktivnostData['naziv'] = widget.naziv;
+    aktivnostData['opis'] = widget.opis;
+    aktivnostData['datum'] = widget.naziv;
+    aktivnostData['vrijeme'] = widget.vrijeme;
+    aktivnostData['lat'] = widget.lat;
+    aktivnostData['long'] = widget.long;
+    date1 = DateTime.parse(widget.datum);
+    time = TimeOfDay(hour: int.parse(widget.vrijeme.substring(10, widget.vrijeme.indexOf(':'))), minute: int.parse(widget.vrijeme.substring(widget.vrijeme.indexOf(':') + 1, widget.vrijeme.length - 1)));
+  }
 
   Map<String, dynamic> aktivnostData = {
     'naziv': '',
@@ -70,93 +105,13 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
     'long': '',
   };
 
-  void submit() async {
-    if (!formKey.currentState!.validate()) {
-      return;
-    }
-    formKey.currentState!.save();
-
-    setState(() {
-      lokacijaError = '';
-    });
-    setState(() {
-      datumError = '';
-    });
-    setState(() {
-      vrijemeError = '';
-    });
-
-    if (aktivnostData['datum'] == '') {
-      setState(() {
-        datumError = 'Molimo Vas izaberite datum';
-      });
-      return;
-    }
-    if (aktivnostData['vrijeme'] == '') {
-      setState(() {
-        vrijemeError = 'Molimo Vas izaberite vrijeme';
-      });
-      return;
-    }
-    if (aktivnostData['lat'] == '' || aktivnostData['long'] == '') {
-      setState(() {
-        lokacijaError = 'Molimo Vas izaberite lokaciju';
-      });
-      return;
-    }
-
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      await Provider.of<GeneralProvider>(context, listen: false)
-          .dodajAktivnost(
-        naziv: aktivnostData['naziv'],
-        opis: aktivnostData['opis'],
-        lat: aktivnostData['lat'],
-        long: aktivnostData['long'],
-        datum: aktivnostData['datum'].toString(),
-        vrijeme: aktivnostData['vrijeme'].toString(),
-      )
-          .then((value) {
-        setState(() {
-          isLoading = false;
-          ScaffoldMessenger.of(context).removeCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Theme.of(context).colorScheme.tertiary,
-              content: Text(
-                'Uspješno ste dodali aktivnost',
-                style: Theme.of(context).textTheme.headline4,
-              ),
-            ),
-          );
-          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-        });
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      Metode.showErrorDialog(
-        isJednoPoredDrugog: false,
-        context: context,
-        naslov: e.toString(),
-        button1Text: 'Zatvori',
-        button1Fun: () {
-          Navigator.pop(context);
-        },
-        isButton2: false,
-      );
-    }
-  }
-
-  Set<Marker> markers = {};
+  Set<Marker> markeri = {};
 
   DateTime date1 = DateTime.now();
   DateTime date2 = DateTime.now().add(Duration(days: 365));
   void datePicker() {
     FocusManager.instance.primaryFocus!.unfocus();
+
     showDatePicker(
       context: context,
       initialDate: date1,
@@ -192,6 +147,59 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
     });
   }
 
+  void submit() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+    formKey.currentState!.save();
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      await Provider.of<GeneralProvider>(context, listen: false)
+          .urediAktivnost(
+        id: widget.id,
+        naziv: aktivnostData['naziv'],
+        opis: aktivnostData['opis'],
+        lat: aktivnostData['lat'],
+        long: aktivnostData['long'],
+        datum: aktivnostData['datum'].toString(),
+        vrijeme: aktivnostData['vrijeme'].toString(),
+      )
+          .then((value) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+            content: Text(
+              'Uspješno ste uredili aktivnost',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ),
+        );
+        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print(e);
+      Metode.showErrorDialog(
+        isJednoPoredDrugog: false,
+        context: context,
+        naslov: 'Došlo je do greške',
+        button1Text: 'Zatvori',
+        button1Fun: () {
+          Navigator.pop(context);
+        },
+        isButton2: false,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
@@ -202,7 +210,7 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
           preferredSize: Size(100, 100),
           child: CustomAppBar(
             pageTitle: Text(
-              'Dodajte Aktivnost',
+              'Uredite Aktivnost',
               style: Theme.of(context).textTheme.headline2!.copyWith(
                     fontWeight: FontWeight.w500,
                     color: Theme.of(context).colorScheme.primary,
@@ -229,7 +237,7 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
               Navigator.pop(context);
             },
             drugaIkonica: isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     height: 33,
                     child: CircularProgressIndicator(),
                   )
@@ -248,7 +256,6 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                   ),
             drugaIkonicaFunkcija: () {
               ScaffoldMessenger.of(context).removeCurrentSnackBar();
-              FocusManager.instance.primaryFocus!.unfocus();
               submit();
             },
           ),
@@ -257,7 +264,6 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
             child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
                 Form(
@@ -265,6 +271,7 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                   child: Column(
                     children: [
                       InputField(
+                        initalValue: widget.naziv,
                         medijakveri: medijakveri,
                         hintText: 'Naziv',
                         inputAction: TextInputAction.next,
@@ -297,6 +304,7 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                         ),
                       ),
                       InputField(
+                        initalValue: widget.opis,
                         medijakveri: medijakveri,
                         hintText: 'Opis',
                         inputAction: TextInputAction.done,
@@ -343,10 +351,11 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                             color: Theme.of(context).colorScheme.primary,
                           ),
                     ),
-                    text: aktivnostData['datum'] == '' ? 'Datum' : DateFormat('dd.MM.yyyy.').format(date1),
+                    hintTextColor: Colors.black,
+                    text: DateFormat('dd.MM.yyyy.').format(date1),
                     borderRadijus: 10,
                     visina: 20,
-                    errorString: datumError,
+                    errorString: '',
                   ),
                 ),
                 GestureDetector(
@@ -359,16 +368,17 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                             color: Theme.of(context).colorScheme.primary,
                           ),
                     ),
-                    text: aktivnostData['vrijeme'] == '' ? 'Vrijeme' : time.format(context),
+                    hintTextColor: Colors.black,
+                    text: time.format(context),
                     borderRadijus: 10,
                     visina: 20,
-                    errorString: vrijemeError,
+                    errorString: '',
                   ),
                 ),
                 Row(
                   children: [
                     Text(
-                      'Dodajte lokaciju',
+                      'Uredite lokaciju',
                       style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.primary),
                     ),
                   ],
@@ -399,8 +409,8 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                             },
                             onTap: (position) {
                               setState(() {
-                                markers.clear();
-                                markers.add(
+                                markeri.clear();
+                                markeri.add(
                                   Marker(
                                     markerId: MarkerId(
                                       DateTime.now().toIso8601String(),
@@ -411,10 +421,9 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                                 );
                                 aktivnostData['lat'] = position.latitude.toString();
                                 aktivnostData['long'] = position.longitude.toString();
-                                lokacijaError = '';
                               });
                             },
-                            markers: markers,
+                            markers: markeri,
                           ),
                         ),
                       )
@@ -423,46 +432,6 @@ class _DodajAktivnostScreenState extends State<DodajAktivnostScreen> {
                         child: Center(child: CircularProgressIndicator()),
                       ),
                 SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
-                if (lokacijaError != '')
-                  Row(
-                    children: [
-                      Text(
-                        lokacijaError,
-                        style: Theme.of(context).textTheme.headline4!.copyWith(
-                              color: Colors.red,
-                            ),
-                      ),
-                    ],
-                  ),
-                if (lokacijaError != '') SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
-                Button(
-                  buttonText: 'Trenutna lokacija',
-                  borderRadius: 10,
-                  visina: 18,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  isBorder: false,
-                  funkcija: () {
-                    setState(() {
-                      markers.clear();
-                      markers.add(
-                        Marker(
-                          markerId: MarkerId(
-                            DateTime.now().toIso8601String(),
-                          ),
-                          position: currentPosition,
-                          icon: BitmapDescriptor.defaultMarker,
-                        ),
-                      );
-                      aktivnostData['lat'] = currentPosition.latitude.toString();
-                      aktivnostData['long'] = currentPosition.longitude.toString();
-                      lokacijaError = '';
-                    });
-                  },
-                  icon: const Icon(
-                    TablerIcons.map_pin_filled,
-                    color: Colors.white,
-                  ),
-                ),
                 SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.035),
               ],
             ),

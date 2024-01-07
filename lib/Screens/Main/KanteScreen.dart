@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:ecoguardian/Screens/Preduzece/DodajKantuScreen.dart';
+import 'package:ecoguardian/Screens/Preduzece/UrediKantuScreen.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/InputField.dart';
 import 'package:ecoguardian/components/metode.dart';
@@ -35,17 +36,14 @@ class _KanteScreenState extends State<KanteScreen> {
 
   GoogleMapController? yourMapController;
 
-  //this is the function to load custom map style json
   void changeMapMode(GoogleMapController mapController) {
     getJsonFile("assets/map_style.json").then((value) => setMapStyle(value, mapController));
   }
 
-  //helper function
   void setMapStyle(String mapStyle, GoogleMapController mapController) {
     mapController.setMapStyle(mapStyle);
   }
 
-  //helper function
   Future<String> getJsonFile(String path) async {
     ByteData byte = await rootBundle.load(path);
     var list = byte.buffer.asUint8List(byte.offsetInBytes, byte.lengthInBytes);
@@ -69,7 +67,7 @@ class _KanteScreenState extends State<KanteScreen> {
         });
       }
       if (markeri.isEmpty) {
-        await Provider.of<GeneralProvider>(context).readKante().then((value) {
+        await Provider.of<GeneralProvider>(context).procitajKante().then((value) {
           if (value.isNotEmpty) {
             for (var i = 0; i < value.length; i++) {
               final duzina = sqrt((double.parse(value[i].lat).abs() - currentPosition.latitude.abs()).abs() + (double.parse(value[i].long).abs() - currentPosition.longitude.abs()).abs());
@@ -160,7 +158,7 @@ class _KanteScreenState extends State<KanteScreen> {
                     ),
           drugaIkonicaFunkcija: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
               ? () async {
-                  await Provider.of<GeneralProvider>(context, listen: false).readTypes().then((value) {
+                  await Provider.of<GeneralProvider>(context, listen: false).procitajTipove().then((value) {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const DodajKantuScreen()));
                   });
                 }
@@ -187,7 +185,6 @@ class _KanteScreenState extends State<KanteScreen> {
                         onMapCreated: (GoogleMapController c) {
                           yourMapController = c;
                           changeMapMode(yourMapController!);
-                          // c.moveCamera(cameraUpdate)
                         },
                         trafficEnabled: false,
                         myLocationButtonEnabled: true,
@@ -205,11 +202,15 @@ class _KanteScreenState extends State<KanteScreen> {
                   ),
             SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
             FutureBuilder(
-              future: Provider.of<GeneralProvider>(context).readKante(),
+              future: Provider.of<GeneralProvider>(context).procitajKante(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.262,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 }
                 List<Kanta> sveKante = snapshot.data!;
@@ -243,7 +244,7 @@ class _KanteScreenState extends State<KanteScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        'Nismo našli podatke',
+                        'Nema podataka',
                         style: Theme.of(context).textTheme.headline3,
                       ),
                     ),
@@ -277,40 +278,57 @@ class _KanteScreenState extends State<KanteScreen> {
                             ),
                           );
                         },
-                        onLongPress: currentUser!.role == 'Employee' || currentUser!.role == 'SuperAdmin'
-                            ? () {
-                                Metode.showErrorDialog(
-                                  isJednoPoredDrugog: false,
-                                  context: context,
-                                  naslov: 'Koju akciju želite da izvršite?',
-                                  button1Text: 'Uredite kantu',
-                                  button1Fun: () {
-                                    Navigator.pop(context);
-                                  },
-                                  isButton1Icon: true,
-                                  button1Icon: Icon(
-                                    TablerIcons.pencil,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                  isButton2: true,
-                                  button2Text: 'Obrišite kantu',
-                                  button2Fun: () async {
-                                    await Provider.of<GeneralProvider>(context, listen: false).deleteKantu(kante[index].id).then((value) {
-                                      setState(() {
-                                        markeri.removeWhere((element) => element.markerId.value == kante[index].id);
-                                      });
+                        onLongPress: isLoading
+                            ? () {}
+                            : currentUser!.role == 'Employee' || currentUser!.role == 'SuperAdmin'
+                                ? () {
+                                    Metode.showErrorDialog(
+                                      isJednoPoredDrugog: false,
+                                      context: context,
+                                      naslov: 'Koju akciju želite da izvršite?',
+                                      button1Text: 'Uredite kantu',
+                                      button1Fun: () async {
+                                        Navigator.pop(context);
+                                        await Provider.of<GeneralProvider>(context, listen: false).procitajTipove().then((value) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => UrediKantuScreen(
+                                                id: kante[index].id,
+                                                lat: kante[index].lat,
+                                                long: kante[index].long,
+                                                typeId: kante[index].typeId,
+                                                typeName: kante[index].typeName,
+                                                typeColor: kante[index].typeColor,
+                                              ),
+                                            ),
+                                          );
+                                        });
+                                      },
+                                      isButton1Icon: true,
+                                      button1Icon: Icon(
+                                        TablerIcons.pencil,
+                                        color: Theme.of(context).colorScheme.primary,
+                                      ),
+                                      isButton2: true,
+                                      button2Text: 'Obrišite kantu',
+                                      button2Fun: () async {
+                                        await Provider.of<GeneralProvider>(context, listen: false).obrisiKantu(kante[index].id).then((value) {
+                                          setState(() {
+                                            markeri.removeWhere((element) => element.markerId.value == kante[index].id);
+                                          });
 
-                                      Navigator.pop(context);
-                                    });
-                                  },
-                                  isButton2Icon: true,
-                                  button2Icon: Icon(
-                                    TablerIcons.trash,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                );
-                              }
-                            : () {},
+                                          Navigator.pop(context);
+                                        });
+                                      },
+                                      isButton2Icon: true,
+                                      button2Icon: Icon(
+                                        TablerIcons.trash,
+                                        color: Theme.of(context).colorScheme.primary,
+                                      ),
+                                    );
+                                  }
+                                : () {},
                         child: Container(
                           margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06, vertical: 5),
                           decoration: BoxDecoration(

@@ -7,6 +7,8 @@ class InputFieldDisabled extends StatelessWidget {
   final double borderRadijus;
   final double visina;
   final String errorString;
+  final Color? hintTextColor;
+
   const InputFieldDisabled({
     super.key,
     required this.medijakveri,
@@ -15,6 +17,7 @@ class InputFieldDisabled extends StatelessWidget {
     this.borderRadijus = 20,
     this.visina = 10,
     required this.errorString,
+    this.hintTextColor = Colors.grey,
   });
 
   @override
@@ -50,7 +53,7 @@ class InputFieldDisabled extends StatelessWidget {
                   child: Text(
                     text,
                     style: Theme.of(context).textTheme.headline4?.copyWith(
-                          color: Colors.grey,
+                          color: hintTextColor,
                           fontSize: 16,
                         ),
                   ),

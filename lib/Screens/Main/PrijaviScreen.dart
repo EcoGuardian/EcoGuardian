@@ -33,17 +33,14 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
 
   GoogleMapController? yourMapController;
 
-  //this is the function to load custom map style json
   void changeMapMode(GoogleMapController mapController) {
     getJsonFile("assets/map_style.json").then((value) => setMapStyle(value, mapController));
   }
 
-  //helper function
   void setMapStyle(String mapStyle, GoogleMapController mapController) {
     mapController.setMapStyle(mapStyle);
   }
 
-  //helper function
   Future<String> getJsonFile(String path) async {
     ByteData byte = await rootBundle.load(path);
     var list = byte.buffer.asUint8List(byte.offsetInBytes, byte.lengthInBytes);
@@ -128,7 +125,7 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
     });
     try {
       await Provider.of<GeneralProvider>(context, listen: false)
-          .addPrijavu(
+          .dodajPrijavu(
         lat: prijavaData['lat'],
         long: prijavaData['long'],
         opis: prijavaData['opis'],
@@ -318,7 +315,7 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
-                          height: 200,
+                          height: (medijakveri.size.height - medijakveri.padding.top) * 0.4,
                           child: GoogleMap(
                             initialCameraPosition: CameraPosition(
                               target: currentPosition,
@@ -359,7 +356,7 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                         ),
                       )
                     : Container(
-                        height: 200,
+                        height: (medijakveri.size.height - medijakveri.padding.top) * 0.4,
                         child: const Center(child: CircularProgressIndicator()),
                       ),
                 SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),

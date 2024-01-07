@@ -4,18 +4,19 @@ import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/InputField.dart';
 import 'package:ecoguardian/components/metode.dart';
-import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
-class PrijavaEditScreen extends StatefulWidget {
+class UrediPrijavuScreen extends StatefulWidget {
   final String description;
   final DateTime dateTime;
   final String lat;
@@ -25,7 +26,7 @@ class PrijavaEditScreen extends StatefulWidget {
   final String id;
   static const String routeName = '/PrijavaEditScreen';
 
-  const PrijavaEditScreen({
+  const UrediPrijavuScreen({
     super.key,
     required this.description,
     required this.dateTime,
@@ -37,10 +38,10 @@ class PrijavaEditScreen extends StatefulWidget {
   });
 
   @override
-  State<PrijavaEditScreen> createState() => _PrijavaEditScreenState();
+  State<UrediPrijavuScreen> createState() => _UrediPrijavuScreenState();
 }
 
-class _PrijavaEditScreenState extends State<PrijavaEditScreen> {
+class _UrediPrijavuScreenState extends State<UrediPrijavuScreen> {
   final _form = GlobalKey<FormState>();
 
   String? slikaValidator;
@@ -121,7 +122,7 @@ class _PrijavaEditScreenState extends State<PrijavaEditScreen> {
     });
     try {
       await Provider.of<GeneralProvider>(context, listen: false)
-          .updatePrijavu(
+          .urediPrijavu(
         id: int.parse(widget.id),
         lat: prijavaData['lat']!,
         long: prijavaData['long']!,
@@ -175,6 +176,22 @@ class _PrijavaEditScreenState extends State<PrijavaEditScreen> {
     'long': '',
     'opis': '',
   };
+
+  GoogleMapController? yourMapController;
+
+  void changeMapMode(GoogleMapController mapController) {
+    getJsonFile("assets/map_style.json").then((value) => setMapStyle(value, mapController));
+  }
+
+  void setMapStyle(String mapStyle, GoogleMapController mapController) {
+    mapController.setMapStyle(mapStyle);
+  }
+
+  Future<String> getJsonFile(String path) async {
+    ByteData byte = await rootBundle.load(path);
+    var list = byte.buffer.asUint8List(byte.offsetInBytes, byte.lengthInBytes);
+    return utf8.decode(list);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -324,12 +341,16 @@ class _PrijavaEditScreenState extends State<PrijavaEditScreen> {
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
-                          height: 200,
+                          height: (medijakveri.size.height - medijakveri.padding.top) * 0.4,
                           child: GoogleMap(
                             initialCameraPosition: CameraPosition(
                               target: currentPosition,
                               zoom: 15,
                             ),
+                            onMapCreated: (GoogleMapController c) {
+                              yourMapController = c;
+                              changeMapMode(yourMapController!);
+                            },
                             gestureRecognizers: {
                               Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
                             },
@@ -359,7 +380,7 @@ class _PrijavaEditScreenState extends State<PrijavaEditScreen> {
                         ),
                       )
                     : Container(
-                        height: 200,
+                        height: (medijakveri.size.height - medijakveri.padding.top) * 0.4,
                         child: const Center(child: CircularProgressIndicator()),
                       ),
                 SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.02),
