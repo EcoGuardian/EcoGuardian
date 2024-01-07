@@ -8,6 +8,7 @@ class Aktivnost {
   String vrijeme;
   String likes;
   bool isLiked;
+  DateTime createdAt;
 
   Aktivnost({
     required this.id,
@@ -19,5 +20,6 @@ class Aktivnost {
     required this.vrijeme,
     required this.likes,
     required this.isLiked,
+    required this.createdAt,
   });
 }

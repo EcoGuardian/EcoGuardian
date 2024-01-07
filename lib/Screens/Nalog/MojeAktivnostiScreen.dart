@@ -1,6 +1,8 @@
+import 'package:ecoguardian/components/AktivnostCard.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/PrijavaCard.dart';
 import 'package:ecoguardian/components/metode.dart';
+import 'package:ecoguardian/models/Aktivnost.dart';
 import 'package:ecoguardian/models/Prijava.dart';
 import 'package:ecoguardian/models/User.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
@@ -9,15 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:provider/provider.dart';
 
-class MojePrijaveScreen extends StatefulWidget {
-  static const String routeName = '/mojePrijave';
-  const MojePrijaveScreen({Key? key}) : super(key: key);
+class MojeAktivnostiScreen extends StatefulWidget {
+  static const String routeName = '/mojeAktivnosti';
+  const MojeAktivnostiScreen({Key? key}) : super(key: key);
 
   @override
-  State<MojePrijaveScreen> createState() => _MojePrijaveScreenState();
+  State<MojeAktivnostiScreen> createState() => _MojeAktivnostiScreenState();
 }
 
-class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
+class _MojeAktivnostiScreenState extends State<MojeAktivnostiScreen> {
   User? currentUser;
   bool isLoading = false;
 
@@ -63,7 +65,7 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
             Navigator.pop(context);
           },
           pageTitle: Text(
-            'Moje Prijave',
+            'Moje Aktivnosti',
             style: Theme.of(context).textTheme.headline2!.copyWith(
                   fontWeight: FontWeight.w500,
                   color: Theme.of(context).colorScheme.primary,
@@ -83,39 +85,21 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
           children: [
             SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
             FutureBuilder(
-              future: Provider.of<GeneralProvider>(context).procitajPrijave(),
+              future: Provider.of<GeneralProvider>(context).procitajAktivnosti(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.787,
-                    child: Center(
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
+                    child: const Center(
                       child: CircularProgressIndicator(),
                     ),
                   );
                 }
-                print(snapshot.data);
-
-                List<Prijava> prijave = snapshot.data!;
-                prijave.sort(
-                  (a, b) {
-                    if (a.createdAt.isAfter(b.createdAt)) {
-                      return 0;
-                    }
-                    return 1;
-                  },
-                );
-                List<Prijava> mojePrijave = [];
-                for (var prijava in prijave) {
-                  if (prijava.userId == currentUser!.id) {
-                    mojePrijave.add(prijava);
-                  }
-                }
-
-                if (mojePrijave.isEmpty) {
+                if (!snapshot.hasData) {
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.787,
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
                     child: Center(
                       child: Text(
                         'Nema podataka',
@@ -124,22 +108,46 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
                     ),
                   );
                 }
+                List<Aktivnost> aktivnosti = snapshot.data!;
+                List<Aktivnost> mojeAktivnosti = [];
+                aktivnosti.forEach(
+                  (element) {
+                    if (element.isLiked == true) {
+                      mojeAktivnosti.add(element);
+                    }
+                  },
+                );
+                print(mojeAktivnosti);
+                if (mojeAktivnosti.isEmpty || mojeAktivnosti == []) {
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
+                    child: Center(
+                      child: Text(
+                        'Nema Aktivnosti',
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                    ),
+                  );
+                }
 
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.787,
+                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
                   child: ListView.builder(
-                    itemCount: mojePrijave.length,
+                    itemCount: mojeAktivnosti.length,
                     itemBuilder: (context, index) {
-                      return PrijavaCard(
-                        id: mojePrijave[index].id,
-                        userId: mojePrijave[index].userId,
-                        description: mojePrijave[index].description,
-                        dateTime: mojePrijave[index].createdAt,
-                        lat: mojePrijave[index].lat,
-                        long: mojePrijave[index].long,
-                        imageUrl: mojePrijave[index].imageUrl,
-                        status: mojePrijave[index].status,
+                      return AktivnostCard(
+                        id: mojeAktivnosti[index].id,
+                        naziv: mojeAktivnosti[index].naziv,
+                        opis: mojeAktivnosti[index].opis,
+                        datum: mojeAktivnosti[index].datum,
+                        vrijeme: mojeAktivnosti[index].vrijeme,
+                        likes: mojeAktivnosti[index].likes,
+                        lat: mojeAktivnosti[index].lat,
+                        long: mojeAktivnosti[index].long,
+                        isLiked: mojeAktivnosti[index].isLiked,
+                        createdAt: aktivnosti[index].createdAt,
                       );
                     },
                   ),

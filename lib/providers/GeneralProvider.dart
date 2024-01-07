@@ -145,7 +145,6 @@ class GeneralProvider with ChangeNotifier {
         },
       ).then((value) {
         final response = json.decode(value.body);
-        print(response);
         if (response['success'] != true && response['data'] != 'No spots yet!') {
           throw HttpException('Došlo je do greške');
         }
@@ -188,7 +187,6 @@ class GeneralProvider with ChangeNotifier {
         },
       );
     } catch (e) {
-      print(e);
       throw (e);
     }
   }
@@ -341,7 +339,7 @@ class GeneralProvider with ChangeNotifier {
   }
 
   Future<void> rrijesiPrijavuBre(id, status) async {
-    final url = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${int.parse(id) + 1}');
+    final url = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${int.parse(id)}');
     try {
       if (status == 'Riješena') {
         await await http.patch(
@@ -372,6 +370,29 @@ class GeneralProvider with ChangeNotifier {
           }
         });
       }
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> obrisiPrijavu(id) async {
+    Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/reports/delete/$id');
+    try {
+      await http.delete(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ).then((value) {
+        final response = json.decode(value.body);
+        print(response);
+        if (response['success'] != true && response['data'] != 'No spots yet!') {
+          throw HttpException('Došlo je do greške');
+        }
+      });
       notifyListeners();
     } catch (e) {
       throw e;
@@ -443,6 +464,7 @@ class GeneralProvider with ChangeNotifier {
               vrijeme: response['data'][i]['datetime'].substring(zarez + 3, response['data'][i]['datetime'].length),
               likes: response['data'][i]['likes'].toString(),
               isLiked: response['data'][i]['isLiked'],
+              createdAt: DateTime.parse('${response['data'][i]['created_at'][0]} ${response['data'][i]['created_at'][1]}'),
             ),
           );
         }
@@ -505,11 +527,33 @@ class GeneralProvider with ChangeNotifier {
       body: {},
     ).then((value) {
       final response = json.decode(value.body);
-      print(response);
       if (response['success'] != true) {
         throw HttpException('Došlo je do greške');
       }
     });
     notifyListeners();
+  }
+
+  Future<void> obrisiAktivnost(id) async {
+    Uri url = Uri.parse('https://ecoguardian.oarman.tech/api/events/$id');
+    try {
+      await http.delete(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ).then((value) {
+        final response = json.decode(value.body);
+        print(response);
+        if (response['success'] != true) {
+          throw HttpException('Došlo je do greške');
+        }
+      });
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
   }
 }

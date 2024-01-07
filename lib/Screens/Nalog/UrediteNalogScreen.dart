@@ -4,15 +4,15 @@ import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import '../../components/CustomAppbar.dart';
 import '../../components/InputField.dart';
 
-class EditNalogScreen extends StatefulWidget {
+class UrediteNalogScreen extends StatefulWidget {
   static const String routeName = '/editProfile';
-  const EditNalogScreen({Key? key}) : super(key: key);
+  const UrediteNalogScreen({Key? key}) : super(key: key);
 
   @override
-  State<EditNalogScreen> createState() => _EditNalogScreenState();
+  State<UrediteNalogScreen> createState() => _UrediteNalogScreenState();
 }
 
-class _EditNalogScreenState extends State<EditNalogScreen> {
+class _UrediteNalogScreenState extends State<UrediteNalogScreen> {
   Key _form = GlobalKey<FormState>();
 
   final _passwordController = TextEditingController();
