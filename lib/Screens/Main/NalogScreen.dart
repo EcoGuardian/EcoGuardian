@@ -92,8 +92,13 @@ class _NalogScreenState extends State<NalogScreen> {
                           height: 75,
                           width: 75,
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.tertiary,
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(38),
+                          ),
+                          child: Icon(
+                            TablerIcons.user_square_rounded,
+                            size: 50,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         )
                       : ClipRRect(

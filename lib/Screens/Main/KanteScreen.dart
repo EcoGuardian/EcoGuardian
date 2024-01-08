@@ -231,6 +231,13 @@ class _KanteScreenState extends State<KanteScreen> {
                     );
                   }
                 }
+                kante.sort((a, b) {
+                  if (sqrt((double.parse(a.lat) - currentPosition.latitude).abs() + (double.parse(a.long) - currentPosition.longitude).abs()) < sqrt((double.parse(b.lat) - currentPosition.latitude).abs() + (double.parse(b.long) - currentPosition.longitude).abs())) {
+                    return 0;
+                  } else {
+                    return 1;
+                  }
+                });
 
                 if (kante.isEmpty) {
                   return Container(
