@@ -89,12 +89,15 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
                     height: (medijakveri.size.height - medijakveri.padding.top) * 0.787,
-                    child: Center(
-                      child: CircularProgressIndicator(),
+                    child: const Center(
+                      child: SizedBox(
+                        height: 50,
+                        width: 50,
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
                   );
                 }
-                print(snapshot.data);
 
                 List<Prijava> prijave = snapshot.data!;
                 prijave.sort(

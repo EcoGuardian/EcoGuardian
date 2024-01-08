@@ -117,7 +117,7 @@ class _MojeAktivnostiScreenState extends State<MojeAktivnostiScreen> {
                     }
                   },
                 );
-                print(mojeAktivnosti);
+
                 if (mojeAktivnosti.isEmpty || mojeAktivnosti == []) {
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
