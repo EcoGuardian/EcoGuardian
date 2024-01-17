@@ -76,7 +76,7 @@ class GeneralProvider with ChangeNotifier {
         },
       ).then((value) {
         final response = json.decode(value.body);
-
+        // print('KANTEEEEEEEE $response');
         if (response['success'] != true && response['data'] != 'No spots yet!') {
           throw HttpException('Došlo je do greške');
         }
@@ -212,7 +212,7 @@ class GeneralProvider with ChangeNotifier {
           throw HttpException('Došlo je do greške');
         }
 
-        await FirebaseStorage.instance.ref().child('${response['data']['id']}.jpg').putFile(image).then((value) async {
+        await FirebaseStorage.instance.ref().child('prijavaImages').child('${response['data']['id']}.jpg').putFile(image).then((value) async {
           final imageUrl = await value.ref.getDownloadURL();
           final updateUrl = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${response['data']['id']}');
           await http.patch(
@@ -309,7 +309,7 @@ class GeneralProvider with ChangeNotifier {
               throw HttpException('Došlo je do greške');
             }
 
-            await FirebaseStorage.instance.ref().child('${response['data']['id']}.jpg').putFile(image).then((value) async {
+            await FirebaseStorage.instance.ref().child('prijavaImages').child('${response['data']['id']}.jpg').putFile(image).then((value) async {
               final imageUrl = await value.ref.getDownloadURL();
 
               final updateUrl = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${id + 1}');
@@ -472,6 +472,7 @@ class GeneralProvider with ChangeNotifier {
       });
       return aktivnosti;
     } catch (e) {
+      print(e);
       throw e;
     }
   }
@@ -546,7 +547,6 @@ class GeneralProvider with ChangeNotifier {
         },
       ).then((value) {
         final response = json.decode(value.body);
-
         if (response['success'] != true) {
           throw HttpException('Došlo je do greške');
         }

@@ -28,15 +28,12 @@ class _NalogScreenState extends State<NalogScreen> {
     setState(() {
       isLoading = true;
     });
-    currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
-    if (currentUser == null) {
-      await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
-        currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
-        setState(() {
-          isLoading = false;
-        });
+    await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
+      currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+      setState(() {
+        isLoading = false;
       });
-    }
+    });
   }
 
   @override
@@ -73,84 +70,88 @@ class _NalogScreenState extends State<NalogScreen> {
           },
         ),
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-        child: Column(
-          children: [
-            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
-            Container(
-              padding: const EdgeInsets.all(10),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: BorderRadius.circular(10),
-              ),
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
               child: Column(
                 children: [
-                  currentUser!.profilePicture == null
-                      ? Container(
-                          height: 75,
-                          width: 75,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(38),
-                          ),
-                          child: Icon(
-                            TablerIcons.user_square_rounded,
-                            size: 50,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(38),
-                          child: Image.network(
-                            currentUser!.profilePicture!,
-                            height: 75,
-                            width: 75,
-                            fit: BoxFit.fill,
-                          ),
+                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        currentUser!.profilePicture == null
+                            ? Container(
+                                height: 75,
+                                width: 75,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(38),
+                                ),
+                                child: Icon(
+                                  TablerIcons.user_square_rounded,
+                                  size: 50,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(38),
+                                child: Image.network(
+                                  currentUser!.profilePicture!,
+                                  height: 75,
+                                  width: 75,
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                        SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.01),
+                        Text(
+                          currentUser!.name,
+                          style: Theme.of(context).textTheme.headline2,
                         ),
-                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.01),
-                  Text(
-                    currentUser!.name,
-                    style: Theme.of(context).textTheme.headline2,
+                        SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.01),
+                        Text(
+                          currentUser!.email,
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.01),
-                  Text(
-                    currentUser!.email,
-                    style: Theme.of(context).textTheme.headline4,
+                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.04),
+                  NalogItemCard(
+                    icon: TablerIcons.calendar_month,
+                    text: 'Moje Aktivnosti',
+                    funkcija: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MojeAktivnostiScreen()));
+                    },
+                  ),
+                  SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.018),
+                  if (currentUser!.role == 'Default')
+                    NalogItemCard(
+                      icon: TablerIcons.alert_triangle,
+                      text: 'Moje Prijave',
+                      funkcija: () {
+                        Navigator.of(context).pushNamed(MojePrijaveScreen.routeName);
+                      },
+                    ),
+                  if (currentUser!.role == 'Default') SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.018),
+                  NalogItemCard(
+                    icon: TablerIcons.logout,
+                    text: 'Odjavite se',
+                    funkcija: () {
+                      Provider.of<Auth>(context, listen: false).logOut();
+                    },
                   ),
                 ],
               ),
             ),
-            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.04),
-            NalogItemCard(
-              icon: TablerIcons.calendar_month,
-              text: 'Moje Aktivnosti',
-              funkcija: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MojeAktivnostiScreen()));
-              },
-            ),
-            SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.018),
-            if (currentUser!.role == 'Default')
-              NalogItemCard(
-                icon: TablerIcons.alert_triangle,
-                text: 'Moje Prijave',
-                funkcija: () {
-                  Navigator.of(context).pushNamed(MojePrijaveScreen.routeName);
-                },
-              ),
-            if (currentUser!.role == 'Default') SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.018),
-            NalogItemCard(
-              icon: TablerIcons.logout,
-              text: 'Odjavite se',
-              funkcija: () {
-                Provider.of<Auth>(context, listen: false).logOut();
-              },
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

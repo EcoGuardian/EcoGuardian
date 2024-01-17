@@ -60,7 +60,13 @@ class _PrijavaCardState extends State<PrijavaCard> {
         ? Center(
             child: SizedBox(
               height: (medijakveri.size.height - medijakveri.padding.top) * 0.48,
-              child: CircularProgressIndicator(),
+              child: Center(
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(),
+                ),
+              ),
             ),
           )
         : GestureDetector(
