@@ -1,6 +1,8 @@
 import 'package:ecoguardian/Screens/Prijave/ViewPrijavuScreen.dart';
 import 'package:ecoguardian/components/Button.dart';
 import 'package:ecoguardian/components/metode.dart';
+import 'package:ecoguardian/models/User.dart';
+import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:ecoguardian/providers/GeneralProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
@@ -38,6 +40,8 @@ class _PrijavaCardState extends State<PrijavaCard> {
   List<Placemark> mjesto = [];
   bool isLoading = false;
   bool isButtonLoading = false;
+  User? currentUser;
+
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
@@ -45,6 +49,15 @@ class _PrijavaCardState extends State<PrijavaCard> {
     setState(() {
       isLoading = true;
     });
+    currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+    if (currentUser == null) {
+      await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
+        currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+        setState(() {
+          isLoading = false;
+        });
+      });
+    }
     mjesto = await placemarkFromCoordinates(double.parse(widget.lat), double.parse(widget.long)).then((value) {
       setState(() {
         isLoading = false;
@@ -167,23 +180,34 @@ class _PrijavaCardState extends State<PrijavaCard> {
                                     backgroundColor: widget.status == 'Neriješena' ? Colors.white : Theme.of(context).colorScheme.primary,
                                     textColor: widget.status == 'Neriješena' ? Theme.of(context).colorScheme.primary : Colors.white,
                                     isBorder: widget.status == 'Neriješena' ? true : false,
-                                    funkcija: () async {
-                                      try {
-                                        setState(() {
-                                          isButtonLoading = true;
-                                        });
-                                        await Provider.of<GeneralProvider>(context, listen: false).rrijesiPrijavuBre(widget.id, widget.status).then((value) {
-                                          setState(() {
-                                            isButtonLoading = false;
-                                          });
-                                        });
-                                      } catch (e) {
-                                        setState(() {
-                                          isButtonLoading = false;
-                                        });
-                                        print(e);
-                                      }
-                                    },
+                                    funkcija: currentUser!.role == 'SuperAdmin' || currentUser!.role == 'Employee'
+                                        ? () async {
+                                            try {
+                                              setState(() {
+                                                isButtonLoading = true;
+                                              });
+                                              await Provider.of<GeneralProvider>(context, listen: false).rrijesiPrijavuBre(widget.id, widget.status).then((value) {
+                                                setState(() {
+                                                  isButtonLoading = false;
+                                                });
+                                              });
+                                            } catch (e) {
+                                              setState(() {
+                                                isButtonLoading = false;
+                                              });
+                                              Metode.showErrorDialog(
+                                                isJednoPoredDrugog: false,
+                                                context: context,
+                                                naslov: 'Došlo je do greške',
+                                                button1Text: 'Zatvori',
+                                                button1Fun: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                isButton2: false,
+                                              );
+                                            }
+                                          }
+                                        : () {},
                                   ),
                           ],
                         ),

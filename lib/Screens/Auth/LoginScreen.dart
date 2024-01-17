@@ -19,8 +19,19 @@ class LoginScreen extends StatefulWidget {
 class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
   final _form = GlobalKey<FormState>();
 
-  final pass1Node = FocusNode();
+  final sifraNode = FocusNode();
   final emailNode = FocusNode();
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    emailNode.addListener(() {
+      setState(() {});
+    });
+    sifraNode.addListener(() {
+      setState(() {});
+    });
+  }
 
   bool isPassHidden = true;
   void changePassVisibility() {
@@ -103,6 +114,7 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                         children: [
                           InputField(
                             isMargin: true,
+                            focusNode: emailNode,
                             inputAction: TextInputAction.next,
                             inputType: TextInputType.emailAddress,
                             hintText: 'Email',
@@ -112,7 +124,7 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                               authData['email'] = value!.trim();
                             },
                             validator: (value) {
-                              if (pass1Node.hasFocus) {
+                              if (sifraNode.hasFocus) {
                                 return null;
                               } else if (value!.isEmpty) {
                                 return 'Molimo Vas da unesete email adresu';
@@ -145,7 +157,7 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                                   ),
                                 ),
                                 TextFormField(
-                                  focusNode: pass1Node,
+                                  focusNode: sifraNode,
                                   keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.done,
                                   obscureText: isPassHidden,
@@ -180,7 +192,7 @@ class _RegisterScreenState extends State<LoginScreen> with SingleTickerProviderS
                                           color: Colors.grey,
                                           fontSize: 16,
                                         ),
-                                    suffixIcon: pass1Node.hasFocus
+                                    suffixIcon: sifraNode.hasFocus
                                         ? IconButton(
                                             onPressed: () => changePassVisibility(),
                                             icon: isPassHidden ? const Icon(TablerIcons.eye) : const Icon(TablerIcons.eye_off),

@@ -88,7 +88,7 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.787,
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.887,
                     child: const Center(
                       child: SizedBox(
                         height: 50,
@@ -118,7 +118,7 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
                 if (mojePrijave.isEmpty) {
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.787,
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.887,
                     child: Center(
                       child: Text(
                         'Nema podataka',
@@ -130,7 +130,7 @@ class _MojePrijaveScreenState extends State<MojePrijaveScreen> {
 
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.787,
+                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.887,
                   child: ListView.builder(
                     itemCount: mojePrijave.length,
                     itemBuilder: (context, index) {

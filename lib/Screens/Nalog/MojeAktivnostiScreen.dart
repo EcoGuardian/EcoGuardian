@@ -90,7 +90,7 @@ class _MojeAktivnostiScreenState extends State<MojeAktivnostiScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.791,
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.887,
                     child: const Center(
                       child: CircularProgressIndicator(),
                     ),
@@ -99,7 +99,7 @@ class _MojeAktivnostiScreenState extends State<MojeAktivnostiScreen> {
                 if (!snapshot.hasData) {
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.887,
                     child: Center(
                       child: Text(
                         'Nema podataka',
@@ -118,10 +118,10 @@ class _MojeAktivnostiScreenState extends State<MojeAktivnostiScreen> {
                   },
                 );
 
-                if (mojeAktivnosti.isEmpty || mojeAktivnosti == []) {
-                  Container(
+                if (mojeAktivnosti.isEmpty) {
+                  return Container(
                     margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
+                    height: (medijakveri.size.height - medijakveri.padding.top) * 0.887,
                     child: Center(
                       child: Text(
                         'Nema Aktivnosti',
@@ -133,7 +133,7 @@ class _MojeAktivnostiScreenState extends State<MojeAktivnostiScreen> {
 
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: medijakveri.size.width * 0.06),
-                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.885,
+                  height: (medijakveri.size.height - medijakveri.padding.top) * 0.887,
                   child: ListView.builder(
                     itemCount: mojeAktivnosti.length,
                     itemBuilder: (context, index) {

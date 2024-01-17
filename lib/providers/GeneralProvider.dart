@@ -76,7 +76,6 @@ class GeneralProvider with ChangeNotifier {
         },
       ).then((value) {
         final response = json.decode(value.body);
-        // print('KANTEEEEEEEE $response');
         if (response['success'] != true && response['data'] != 'No spots yet!') {
           throw HttpException('Došlo je do greške');
         }
@@ -145,6 +144,7 @@ class GeneralProvider with ChangeNotifier {
         },
       ).then((value) {
         final response = json.decode(value.body);
+
         if (response['success'] != true && response['data'] != 'No spots yet!') {
           throw HttpException('Došlo je do greške');
         }
