@@ -209,9 +209,11 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-            drugaIkonicaFunkcija: () {
-              submit();
-            },
+            drugaIkonicaFunkcija: isLoading
+                ? () {}
+                : () {
+                    submit();
+                  },
           ),
         ),
         body: SingleChildScrollView(
@@ -426,7 +428,7 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                       return null;
                     },
                     onFieldSubmitted: (_) {
-                      submit();
+                      FocusManager.instance.primaryFocus!.unfocus();
                     },
                     isLabel: true,
                     borderRadijus: 10,
