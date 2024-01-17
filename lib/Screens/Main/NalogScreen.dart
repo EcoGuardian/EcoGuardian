@@ -3,6 +3,7 @@ import 'package:ecoguardian/Screens/Nalog/MojeAktivnostiScreen.dart';
 import 'package:ecoguardian/Screens/Nalog/MojePrijaveScreen.dart';
 import 'package:ecoguardian/components/CustomAppbar.dart';
 import 'package:ecoguardian/components/NalogItemCard.dart';
+import 'package:ecoguardian/components/metode.dart';
 import 'package:ecoguardian/models/User.dart';
 import 'package:ecoguardian/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
@@ -146,7 +147,43 @@ class _NalogScreenState extends State<NalogScreen> {
                     icon: TablerIcons.logout,
                     text: 'Odjavite se',
                     funkcija: () {
-                      Provider.of<Auth>(context, listen: false).logOut();
+                      Metode.showErrorDialog(
+                        isJednoPoredDrugog: true,
+                        context: context,
+                        naslov: 'Da li ste sigurni da želite da se odjavite?',
+                        button1Text: 'Ne',
+                        isButton1Icon: true,
+                        button1Icon: Icon(
+                          TablerIcons.circle_x,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        button1Fun: () {
+                          Navigator.pop(context);
+                        },
+                        isButton2: true,
+                        button2Text: 'Da',
+                        isButton2Icon: true,
+                        button2Icon: Icon(
+                          TablerIcons.circle_check,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        button2Fun: () async {
+                          try {
+                            Provider.of<Auth>(context, listen: false).logOut();
+                            Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
+                          } catch (e) {
+                            Metode.showErrorDialog(
+                              isJednoPoredDrugog: false,
+                              message: "Došlo je do greške sa internetom. Provjerite svoju konekciju.",
+                              context: context,
+                              naslov: 'Greška',
+                              button1Text: 'Zatvori',
+                              button1Fun: () => Navigator.pop(context),
+                              isButton2: false,
+                            );
+                          }
+                        },
+                      );
                     },
                   ),
                 ],
