@@ -77,6 +77,7 @@ class GeneralProvider with ChangeNotifier {
       ).then((value) {
         final response = json.decode(value.body);
         if (response['success'] != true && response['data'] != 'No spots yet!') {
+          print(response);
           throw HttpException('Došlo je do greške');
         }
         if (response['data'] == 'No spots yet!') {
@@ -276,7 +277,8 @@ class GeneralProvider with ChangeNotifier {
   }
 
   Future<void> urediPrijavu({required String lat, required String long, required String description, File? image, required int id}) async {
-    final url = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${id + 1}');
+    final url = Uri.parse('https://ecoguardian.oarman.tech/api/reports/update/${id}');
+
     try {
       if (image == null) {
         await http.patch(
@@ -289,7 +291,13 @@ class GeneralProvider with ChangeNotifier {
             'location': '$lat, $long',
             'description': description,
           },
-        );
+        ).then((value) {
+          final response = json.decode(value.body);
+          print(response);
+          if (response['success'] != true && response['data'] != 'No reports yet!') {
+            throw HttpException('Došlo je do greške');
+          }
+        });
       } else {
         await http.patch(
           url,

@@ -59,13 +59,19 @@ class _KanteScreenState extends State<KanteScreen> {
       setState(() {
         isLoading = true;
       });
-
+      currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+      if (currentUser == null) {
+        await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
+          currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
+        });
+      }
       currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
       if (currentPosition == LatLng(0, 0)) {
         await Provider.of<Auth>(context, listen: false).setCurrentPosition().then((value) async {
           currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
         });
       }
+
       if (markeri.isEmpty) {
         await Provider.of<GeneralProvider>(context).procitajKante().then((value) {
           if (value.isNotEmpty) {
@@ -85,25 +91,12 @@ class _KanteScreenState extends State<KanteScreen> {
                   ),
                 );
               }
+              setState(() {
+                isLoading = false;
+                isCurrentPosition = true;
+              });
             }
           }
-        });
-      }
-
-      if (currentUser == null) {
-        currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
-        if (currentUser == null) {
-          await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
-            currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
-            setState(() {
-              isLoading = false;
-              isCurrentPosition = true;
-            });
-          });
-        }
-        setState(() {
-          isLoading = false;
-          isCurrentPosition = true;
         });
       }
     } catch (e) {
@@ -130,36 +123,34 @@ class _KanteScreenState extends State<KanteScreen> {
           ),
           isCenter: false,
           horizontalMargin: 0.06,
-          drugaIkonica: isLoading
-              ? CircularProgressIndicator()
-              : currentUser!.role == 'Employee' || currentUser!.role == 'SuperAdmin'
-                  ? Container(
-                      padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                      child: Icon(
-                        TablerIcons.circle_plus,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    )
-                  : Container(
-                      padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Colors.transparent,
-                          )),
-                      child: const Icon(
-                        TablerIcons.circle_check,
-                        color: Colors.transparent,
-                      ),
+          drugaIkonica: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
+              ? Container(
+                  padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary,
                     ),
+                  ),
+                  child: Icon(
+                    TablerIcons.circle_plus,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                )
+              : Container(
+                  padding: const EdgeInsets.fromLTRB(4, 2, 4, 5),
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.transparent,
+                      )),
+                  child: const Icon(
+                    TablerIcons.circle_check,
+                    color: Colors.transparent,
+                  ),
+                ),
           drugaIkonicaFunkcija: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
               ? () async {
                   await Provider.of<GeneralProvider>(context, listen: false).procitajTipove().then((value) {
@@ -243,7 +234,7 @@ class _KanteScreenState extends State<KanteScreen> {
                   }
                 });
 
-                if (kante.isEmpty) {
+                if (kante.isEmpty || sveKante.isEmpty || !snapshot.hasData) {
                   return Container(
                     height: (medijakveri.size.height - medijakveri.padding.top) * 0.262,
                     decoration: const BoxDecoration(
@@ -255,7 +246,7 @@ class _KanteScreenState extends State<KanteScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        'Nema podataka',
+                        'Nema kanti u krugu od 10 km',
                         style: Theme.of(context).textTheme.headline3,
                       ),
                     ),
@@ -289,9 +280,9 @@ class _KanteScreenState extends State<KanteScreen> {
                             ),
                           );
                         },
-                        onLongPress: isLoading
+                        onLongPress: currentUser == null
                             ? () {}
-                            : currentUser!.role == 'Employee' || currentUser!.role == 'SuperAdmin'
+                            : currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
                                 ? () {
                                     Metode.showErrorDialog(
                                       isJednoPoredDrugog: false,

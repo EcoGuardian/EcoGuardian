@@ -94,6 +94,7 @@ class _DodajKantuScreenState extends State<DodajKantuScreen> {
               ),
             ),
           );
+          // Navigator.pop(context);
           Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
         },
       );
