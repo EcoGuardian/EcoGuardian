@@ -198,20 +198,7 @@ class _SvePrijaveScreenState extends State<SvePrijaveScreen> {
                   }
                 }
               } else {
-                for (var i = 0; i < prijave.length; i++) {
-                  filterPrijave.add(
-                    Prijava(
-                      id: prijave[i].id,
-                      userId: prijave[i].userId,
-                      imageUrl: prijave[i].imageUrl,
-                      lat: prijave[i].lat,
-                      long: prijave[i].long,
-                      description: prijave[i].description,
-                      status: prijave[i].status,
-                      createdAt: prijave[i].createdAt,
-                    ),
-                  );
-                }
+                filterPrijave = prijave;
               }
               if (filterPrijave.isEmpty) {
                 return Container(

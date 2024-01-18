@@ -143,8 +143,8 @@ class Auth with ChangeNotifier {
           profilePicture: responseData['data']['profile_picture'],
           role: responseData['data']['role'],
         );
-        notifyListeners();
       });
+      notifyListeners();
     } catch (e) {
       throw e;
     }

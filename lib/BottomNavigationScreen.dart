@@ -24,13 +24,10 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    setState(() {
-      isLoading = true;
-    });
+
     await Provider.of<Auth>(context, listen: false).readCurrentUser(Provider.of<Auth>(context, listen: false).getToken).then((value) {
-      currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
       setState(() {
-        isLoading = false;
+        currentUser = Provider.of<Auth>(context, listen: false).getCurrentUser;
       });
     });
   }
@@ -64,7 +61,15 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   Widget build(BuildContext context) {
     final medijakveri = MediaQuery.of(context);
     return Scaffold(
-      body: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin' ? preduzeceScreens[_selectedIndex] : screens[_selectedIndex],
+      body: currentUser?.role == 'Employee' || currentUser?.role == 'SuperAdmin'
+          ? IndexedStack(
+              children: preduzeceScreens,
+              index: _selectedIndex,
+            )
+          : IndexedStack(
+              children: screens,
+              index: _selectedIndex,
+            ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,

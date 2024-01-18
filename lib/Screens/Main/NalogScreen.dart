@@ -170,6 +170,7 @@ class _NalogScreenState extends State<NalogScreen> {
                         button2Fun: () async {
                           try {
                             Provider.of<Auth>(context, listen: false).logOut();
+
                             Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
                           } catch (e) {
                             Metode.showErrorDialog(

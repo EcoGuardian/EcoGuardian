@@ -377,7 +377,7 @@ class _UrediteNalogScreenState extends State<UrediteNalogScreen> {
                                     style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.primary),
                                   ),
                                   hintText: 'E-mail',
-                                  inputAction: TextInputAction.next,
+                                  inputAction: TextInputAction.done,
                                   inputType: TextInputType.emailAddress,
                                   obscureText: false,
                                   borderRadijus: 10,
@@ -395,60 +395,6 @@ class _UrediteNalogScreenState extends State<UrediteNalogScreen> {
                                     authData['email'] = value!.trim();
                                   },
                                 ),
-                                // Container(
-                                //   margin: EdgeInsets.only(bottom: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
-                                //   child: Column(
-                                //     crossAxisAlignment: CrossAxisAlignment.start,
-                                //     children: [
-                                //       Container(
-                                //         margin: EdgeInsets.only(
-                                //           bottom: (medijakveri.size.height - medijakveri.padding.top) * 0.005,
-                                //           left: medijakveri.size.width * 0.02,
-                                //         ),
-                                //         child: Text(
-                                //           'Šifra',
-                                //           style: Theme.of(context).textTheme.headline4?.copyWith(color: Theme.of(context).colorScheme.primary),
-                                //         ),
-                                //       ),
-                                //       TextFormField(
-                                //         focusNode: pass1Node,
-                                //         keyboardType: TextInputType.text,
-                                //         textInputAction: TextInputAction.next,
-                                //         obscureText: isPassHidden,
-                                //         controller: _passwordController,
-                                //         onFieldSubmitted: (_) {
-                                //           FocusScope.of(context).requestFocus(pass2Node);
-                                //         },
-                                //         onSaved: (value) {},
-                                //         validator: (value) {},
-                                //         decoration: InputDecoration(
-                                //           hintText: 'Šifra',
-                                //           filled: true,
-                                //           fillColor: Colors.white,
-                                //           contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-                                //           enabledBorder: OutlineInputBorder(
-                                //             borderSide: const BorderSide(color: Colors.white),
-                                //             borderRadius: BorderRadius.circular(10),
-                                //           ),
-                                //           border: OutlineInputBorder(
-                                //             borderSide: const BorderSide(color: Colors.white),
-                                //             borderRadius: BorderRadius.circular(10),
-                                //           ),
-                                //           hintStyle: Theme.of(context).textTheme.headline4?.copyWith(
-                                //                 color: Colors.grey,
-                                //                 fontSize: 16,
-                                //               ),
-                                //           suffixIcon: pass1Node.hasFocus
-                                //               ? IconButton(
-                                //                   onPressed: () => changePassVisibility(),
-                                //                   icon: isPassHidden ? const Icon(TablerIcons.eye) : const Icon(TablerIcons.eye_off),
-                                //                 )
-                                //               : null,
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
                               ],
                             ),
                           ],
