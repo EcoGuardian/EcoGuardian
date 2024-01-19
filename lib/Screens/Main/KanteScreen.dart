@@ -211,7 +211,7 @@ class _KanteScreenState extends State<KanteScreen> {
                 List<Kanta> sveKante = snapshot.data!;
                 List<Kanta> kante = [];
                 for (var i = 0; i < sveKante.length; i++) {
-                  final duzina = sqrt((double.parse(sveKante[i].lat) - currentPosition.latitude).abs() + (double.parse(sveKante[i].long) - currentPosition.longitude).abs());
+                  final duzina = sqrt((double.parse(sveKante[i].lat).abs() - currentPosition.latitude.abs()).abs() + (double.parse(sveKante[i].long).abs() - currentPosition.longitude.abs()).abs());
                   if (duzina < 0.37) {
                     kante.add(
                       Kanta(

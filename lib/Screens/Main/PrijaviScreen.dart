@@ -85,6 +85,11 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
+    if (currentPosition == LatLng(0, 0)) {
+      await Provider.of<Auth>(context, listen: false).setCurrentPosition().then((value) async {
+        currentPosition = Provider.of<Auth>(context, listen: false).getCurrentPosition;
+      });
+    }
     setState(() {
       isCurrentPosition = true;
     });
