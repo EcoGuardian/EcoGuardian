@@ -415,6 +415,7 @@ class _PrijaviScreenState extends State<PrijaviScreen> {
                     inputAction: TextInputAction.done,
                     inputType: TextInputType.text,
                     hintText: 'Opis',
+                    kapitulacija: TextCapitalization.sentences,
                     medijakveri: medijakveri,
                     obscureText: false,
                     onSaved: (value) {
