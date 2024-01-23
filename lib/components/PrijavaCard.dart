@@ -120,6 +120,7 @@ class _PrijavaCardState extends State<PrijavaCard> {
                     child: Image.network(
                       widget.imageUrl,
                       fit: BoxFit.fill,
+                      width: medijakveri.size.width,
                     ),
                   ),
                   Container(
