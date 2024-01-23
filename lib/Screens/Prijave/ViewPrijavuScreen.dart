@@ -187,7 +187,11 @@ class _ViewPrijavuScreenState extends State<ViewPrijavuScreen> {
                     SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(widget.imageUrl),
+                      child: Image.network(
+                        widget.imageUrl,
+                        width: medijakveri.size.width,
+                        fit: BoxFit.fill,
+                      ),
                     ),
                     SizedBox(height: (medijakveri.size.height - medijakveri.padding.top) * 0.025),
                     Column(
